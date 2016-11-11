@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
-import { Container, Header, Content, List, ListItem, Footer, FooterTab, Button } from 'native-base';
+import { Container, Header, Content, Card, CardItem, Footer, FooterTab, Button, Icon } from 'native-base';
 
 export default class Services extends React.Component {
 
@@ -16,18 +16,26 @@ export default class Services extends React.Component {
 		return(
 			<Container>
 				<Header>
+					<Button onPress={() => this._returnView()}>Voltar</Button>
 					<Text>O Boticão - Serviços</Text>
 				</Header>
 				<Content>
 
-					<List dataArray={this.state.listItems} renderRow={
-													(item) =>
-														<ListItem>
-															<Text>{item[1]}</Text>
-														</ListItem>
-												}>
+					<Card dataArray={this.state.listItems}
+						renderRow={
+							(item) =>
+								<CardItem>
+									<CardItem header>
+										<Text>{item[1]}</Text>
+									</CardItem>
+									<CardItem>
+										<Image resizeMode="cover" source={{uri: item[2]}}>
+										</Image>	
+									</CardItem>										
+								</CardItem>
+					}>
 
-					</List>
+					</Card>
 
 					<Button onPress={() => this._fetchData()}>Baixar lista</Button>
 
@@ -53,9 +61,13 @@ export default class Services extends React.Component {
 		)
 	}
 
+	_returnView() {
+		this.props.navigator.pop();
+	}
+
 	_fetchData() {
 
-		fetch("http://192.168.0.100:3000/api/v1/servicesByCategory?categoryId=" + this.props.categoryId,
+		fetch("http://192.168.0.101:3000/api/v1/servicesByCategory?categoryId=" + this.props.categoryId,
 			{
 				method: 'GET',
 				headers: {
