@@ -24,7 +24,7 @@ export default class Schedule extends React.Component {
 					
 						<Button onPress={() => this._goToView("PetProfile")}>Pets</Button>
 					
-						<Button onPress={() => this._goToView("Services")}>Serviços</Button>
+						<Button onPress={() => this._goToView("ServiceCategories", "")}>Serviços</Button>
 					
 						<Button onPress={() => this._goToView("Schedule")}>Agenda</Button>
 					</FooterTab>

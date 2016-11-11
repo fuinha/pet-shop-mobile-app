@@ -6,6 +6,7 @@ import Signup from './src/components/Signup.js';
 import Menu from './src/components/Menu.js';
 import ClientProfile from './src/components/ClientProfile.js';
 import PetProfile from './src/components/PetProfile.js';
+import PetForm from './src/components/PetForm.js';
 import ServiceCategories from './src/components/ServiceCategories.js';
 import Services from './src/components/Services.js';
 import Schedule from './src/components/Schedule.js';

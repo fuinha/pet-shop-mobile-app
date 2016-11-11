@@ -1,42 +1,67 @@
 import React from 'react';
-import { Alert, StyleSheet, Text, View, Image } from 'react-native';
-import { Container, Header, Content, Card, CardItem, Footer, FooterTab, Button } from 'native-base';
+import { ScrollView, StyleSheet, Text, View, Image } from 'react-native';
+import { Container, Header, Content, List, ListItem, InputGroup, Input, Footer, FooterTab, Button } from 'native-base';
 
-export default class ServiceCategories extends React.Component {
+export default class PetForm extends React.Component {
 
 	constructor() {
 		super();
 		this.state = {
-			listItems: ""
+			nome: "",
+			nascimento: "",
+			raca: "",
+			porte: "",
+			imagem: ""
 		};
 
 	}
 
 	render() {
 		return(
+
 			<Container>
 				<Header>
-					<Text>O Boticão - Categorias de Serviço v1</Text>
+					<Text>O Boticão - Pet Profile</Text>
 				</Header>
 				<Content>
-
-					<Card dataArray={this.state.listItems}
-						renderRow={
-							(item) =>
-								<CardItem>
-									<CardItem header>
-										<Text>{item[1]}</Text>
-									</CardItem>
-									<CardItem button onPress={() => this._goToView("Services", item[0])}>
-										<Image resizeMode="cover" source={{uri: item[2]}}>
-										</Image>	
-									</CardItem>										
-								</CardItem>
-					}>
-
-					</Card>
-
-					<Button onPress={() => this._fetchData()}>Baixar lista</Button>
+					<Image src={this.state.imagem}></Image>
+					
+					<List>
+						<ListItem>
+							<InputGroup disabled>
+								<Input
+									ref="nome"
+									value={this.state.nome}
+								/>
+							</InputGroup>
+						</ListItem>
+						<ListItem>
+							<InputGroup disabled>
+								<Input
+									ref="nascimento"
+									value={this.state.nascimento}
+								/>
+							</InputGroup>
+						</ListItem>
+						<ListItem>
+							<InputGroup disabled>
+								<Input
+									ref="raca"
+									value={this.state.raca}
+								/>
+							</InputGroup>
+						</ListItem>
+						<ListItem>
+							<InputGroup disabled>
+								<Input
+									ref="porte"
+									value={this.state.porte}
+								/>
+							</InputGroup>
+						</ListItem>
+						
+					</List>
+					<Button onPress={() => this._fetchData()}>Verificar token</Button>
 
 				</Content>
 				<Footer>
@@ -54,23 +79,25 @@ export default class ServiceCategories extends React.Component {
 		)
 	}
 
-	_goToView(viewName, categoryId) {
-		console.log("_goToView");
+	_goToView(viewName) {
 		this.props.navigator.push(
-			{name: viewName,
-			 categoryId: categoryId}
+			{name: viewName}
 		)
 	}
 
 	_fetchData() {
 
-		fetch("http://192.168.0.101:3000/api/v1/serviceCategories",
+		fetch("http://192.168.0.101:3000/api/v1/newPet",
 			{
-				method: 'GET',
+				method: 'POST',
 				headers: {
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
-			}})
+				},
+				body: JSON.stringify({
+					
+				})
+			})
 			.then(
 				(response) => {
 					this.setState({responseStatus: response["status"]});
