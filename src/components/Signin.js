@@ -58,7 +58,7 @@ export default class Signin extends React.Component {
 
 	_login() {
 		
-		fetch('http://192.168.0.100:3000/api/v1/loginClient/', {
+		fetch('http://192.168.0.101:3000/api/v1/loginClient/', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
@@ -92,21 +92,21 @@ export default class Signin extends React.Component {
 			console.log("analyzeResponse");
 			this._treatResponseContent();
 		}
-		/*
-		if(response["status"] == "401") {
+		
+		if(this.state.responseStatus == "401") {
 			this._alertOk("Ops! :(",
 						"Parece que a senha informada não está correta. Vamos tentar novamente!");
 		}		
 
-		if(response["status"] == "404") {
+		if(this.state.responseStatus == "404") {
 			this._alertOkCancel("Ops! :(",
 						"Parece que você ainda não possui cadastro. Vamos resolver isso, é rápido!");
 		}
 
-		if(response["status"] == "422") {
+		if(this.state.responseStatus == "422") {
 			this._alertOk("Ops! :(",
 						"Algo inesperado ocorreu no servidor. Tente novamente dentro de alguns instantes, por favor!");
-		}*/
+		}
 
 	}
 

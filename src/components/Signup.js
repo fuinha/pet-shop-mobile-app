@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, View, Text, Alert } from 'react-native';
+import { DatePickerAndroid, Image, View, Text, Alert } from 'react-native';
 import { Container, Content, List, ListItem, InputGroup, Icon, Input, Button } from 'native-base';
 
 export default class Signup extends React.Component {
@@ -62,7 +62,7 @@ export default class Signup extends React.Component {
 									placeholder="Data de Nascimento"
 									value={this.state.nascimento}
 									returnKeyType={"next"}
-									onChangeText={(text) => this.setState({nascimento: text})}
+									onFocus={() => this._showDataPicker()}
 									onSubmitEditing={() => this.refs.telefone._textInput.focus()}
 								/>
 							</InputGroup>
@@ -149,14 +149,36 @@ export default class Signup extends React.Component {
 		)
 	}
 
-	_goToView(viewName) {
+	_goToView(viewName, viewState) {
 		this.props.navigator.push(
-			{name: viewName}
+			{name: viewName,
+			 state: viewState}
 		)
 	}
 
+	async _showDataPicker() {
+		try {
+			const dateReturn = {action: "", year: "", month: "", day: ""};
+			dateReturn = await DatePickerAndroid.open( {
+				date: new Date()
+			});
+			if (dateReturn.action !== DatePickerAndroid.dismissedAction) {
+				console.log("Date chose");
+				if (dateReturn.day < "10") dateReturn.day = "0" + dateReturn.day;
+				dateReturn.month = dateReturn.month + 1;
+				if (dateReturn.month < "10") dateReturn.month = "0" + dateReturn.month;
+
+				this.setState({ nascimento: dateReturn.day + "/" + dateReturn.month + "/" + dateReturn.year});
+			}
+		}
+		catch ({code, message}) {
+			console.warn("Cannot open date picker", message);
+		}
+		
+	}
+
 	_addClient() {
-		fetch('http://192.168.0.100:3000/api/v1/newClient/', {
+		fetch('http://192.168.0.101:3000/api/v1/newClient/', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
@@ -165,6 +187,10 @@ export default class Signup extends React.Component {
 			body: JSON.stringify( {
 				nome: this.state.nome,
 				email: this.state.email,
+				telefone: this.state.telefone,
+				endereco: this.state.endereco,
+				cidade: this.state.cidade,
+				cep: this.state.cep,
 				password: this.state.password,
 				password_confirmation: this.state.password_confirmation,
 				modo_autenticacao: "sistema"
@@ -176,27 +202,35 @@ export default class Signup extends React.Component {
 	}
 
 	_analyzeResponse(response) {
-		if(response["status"] == "422") {
-			this._alert("Ops! :(",
-						"Parece que você ainda não possui cadastro. Vamos resolver isso, é rápido!");
-		}
 		if(response["status"] == "201") {
-			this._alert("Cadastro criado com sucesso!",
-						"Pronto! Agora precisamos confirmar seu endereço");
+			this._treatResponseContent();
 		} 
 	}
 
-	_alert(title, message) {
-
-		Alert.alert(
-			title,
-			message,
-			[
-				{text: "Cancelar", onPress: () => this._goToView('Login') },
-				{text: "Ok", onPress: () => this._goToView('Signup') }
-			]
-		)
-
+	_treatResponseContent() {
+		try {
+			console.log("treatResponseContent");
+			this.setState({token: this.state.responseJson["token"]});
+			this._persistData();
+		}
+		catch(error) {
+			console.log("error: " + error);
+		}
+		Alert.alert("Obrigado " + this.state.nome + "!",
+					"Agora que sabemos quem você é, precisamos saber quem são seus amigos. " +
+					"Depois de adicioná-los, é só agendar um dos serviços oferecidos através do menu!",
+					[{text: "Ok", onPress: () => this._goToView("PetForm", this.state)}]);
 	}
 
+	async _persistData() {
+		console.log("persistData - before asyncstorage");
+		try {
+			await AsyncStorage.setItem("oboticaoState", JSON.stringify(this.state));
+		}
+		catch(error) {
+			console.log("error: " + error);
+		}
+		console.log("persistData - after asyncstorage")
+
+	}
 }

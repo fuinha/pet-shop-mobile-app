@@ -20,22 +20,23 @@ export default class Schedule extends React.Component {
 				</Content>
 				<Footer>
 					<FooterTab>
-						<Button onPress={() => this._goToView("ClientProfile")}>Eu</Button>
+						<Button onPress={() => this._goToView("ClientProfile", this.props.authState)}>Eu</Button>
 					
-						<Button onPress={() => this._goToView("PetProfile")}>Pets</Button>
+						<Button onPress={() => this._goToView("PetProfile", this.props.authState)}>Pets</Button>
 					
 						<Button onPress={() => this._goToView("ServiceCategories", "")}>Serviços</Button>
 					
-						<Button onPress={() => this._goToView("Schedule")}>Agenda</Button>
+						<Button onPress={() => this._goToView("Schedule", this.props.authState)}>Agenda</Button>
 					</FooterTab>
 				</Footer>     			
       		</Container>
 		)
 	}
 
-	_goToView(viewName) {
+	_goToView(viewName, viewState) {
 		this.props.navigator.push(
-			{name: viewName}
+			{name: viewName,
+			 state: viewState}
 		)
 	}
 }

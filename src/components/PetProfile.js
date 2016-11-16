@@ -32,40 +32,47 @@ export default class PetProfile extends React.Component {
 										<Text>{item[1]}</Text>
 									</CardItem>
 									<CardItem button onPress={() => this._goToView("Services", item[0])}>
-										<Image resizeMode="cover" source={{uri: item[2]}}>
+										<Image resizeMode="cover" source={{uri: item[5]}}>
 										</Image>	
+									</CardItem>
+									<CardItem>
+										<Text>Data de Nascimento: {item[2]}</Text>
+										<Text>Raça: {item[3]}</Text>
+										<Text>Porte: {item[4]}</Text>
 									</CardItem>										
 								</CardItem>
 					}>
 
 					</Card>
-					<Button onPress={() => this._fetchData()}>Verificar token</Button>
+					<Button onPress={() => this._fetchData()}>Baixar Lista</Button>
+					<Button onPress={() => this._goToView("PetForm", this.props.authState)}>Adicionar</Button>
 
 				</Content>
 				<Footer>
 					<FooterTab>
-						<Button onPress={() => this._goToView("ClientProfile")}>Eu</Button>
+						<Button onPress={() => this._goToView("ClientProfile", this.props.authState)}>Eu</Button>
 					
-						<Button onPress={() => this._goToView("PetProfile")}>Pets</Button>
+						<Button onPress={() => this._goToView("PetProfile", this.props.authState)}>Pets</Button>
 					
 						<Button onPress={() => this._goToView("ServiceCategories", "")}>Serviços</Button>
 					
-						<Button onPress={() => this._goToView("Schedule")}>Agenda</Button>
+						<Button onPress={() => this._goToView("Schedule", this.props.authState)}>Agenda</Button>
 					</FooterTab>
 				</Footer>     			
       		</Container>
 		)
 	}
 
-	_goToView(viewName) {
+	_goToView(viewName, viewState) {
 		this.props.navigator.push(
-			{name: viewName}
+			{name: viewName,
+			 state: viewState}
 		)
 	}
 
 	_fetchData() {
 
-		fetch("http://192.168.0.101:3000/api/v1/petsByClient",
+		fetch("http://192.168.0.101:3000/api/v1/petsByClient?clientEmail=" + this.props.authState.email,
 			{
 				method: 'GET',
 				headers: {
@@ -106,8 +113,11 @@ export default class PetProfile extends React.Component {
 			var listItems = new Array();
 			var index = 0;
 			for(var key in this.state.responseJson) {
-				listItems[index] = new Array(key, this.state.responseJson[key]["descricao"], this.state.responseJson[key]["imagem"]);
-				console.log(key + " - " + this.state.responseJson[key]["descricao"] + " - " + this.state.responseJson[key]["imagem"])
+				listItems[index] = new Array(key, this.state.responseJson[key]["nome"],
+											this.state.responseJson[key]["nascimento"],
+											this.state.responseJson[key]["raca"],
+											this.state.responseJson[key]["porte"],
+											this.state.responseJson[key]["imagem"]);
 				index = index + 1;
 			}
 

@@ -60,7 +60,7 @@ export default class ClientProfile extends React.Component {
 							<InputGroup disabled>
 								<Input
 									ref="telefone"
-									value={this.state.telefone}
+									value={"Telefone: " + this.state.telefone}
 								/>
 							</InputGroup>
 						</ListItem>
@@ -84,33 +84,34 @@ export default class ClientProfile extends React.Component {
 							<InputGroup disabled>
 								<Input
 									ref="cep"
-									value={this.state.cep}
+									value={"CEP: " + this.state.cep}
 								/>
 							</InputGroup>
 						</ListItem>
 					</List>
-					<Button onPress={() => this._fetchData()}>Verificar token</Button>
+					<Button onPress={() => this._fetchData()}>Baixar</Button>
 					<Button onPress={() => this._getGeoPosition()}>Posição</Button>
 
 				</Content>
 				<Footer>
 					<FooterTab>
-						<Button onPress={() => this._goToView("ClientProfile")}>Eu</Button>
+						<Button onPress={() => this._goToView("ClientProfile", this.props.authState)}>Eu</Button>
 					
-						<Button onPress={() => this._goToView("PetProfile")}>Pets</Button>
+						<Button onPress={() => this._goToView("PetProfile", this.props.authState)}>Pets</Button>
 					
 						<Button onPress={() => this._goToView("ServiceCategories", "")}>Serviços</Button>
 					
-						<Button onPress={() => this._goToView("Schedule")}>Agenda</Button>
+						<Button onPress={() => this._goToView("Schedule", this.props.authState)}>Agenda</Button>
 					</FooterTab>
 				</Footer>     			
       		</Container>
 		)
 	}
 
-	_goToView(viewName) {
+	_goToView(viewName, viewState) {
 		this.props.navigator.push(
-			{name: viewName}
+			{name: viewName,
+			 state: viewState}
 		)
 	}
 
@@ -133,7 +134,7 @@ export default class ClientProfile extends React.Component {
 
 	_fetchData() {
 
-		fetch("http://192.168.0.100:3000/api/v1/clientProfile?email=" + this.props.authState.email + "&token=" + this.props.authState.token,
+		fetch("http://192.168.0.101:3000/api/v1/clientProfile?email=" + this.props.authState.email + "&token=" + this.props.authState.token,
 			{
 				method: 'GET',
 				headers: {
