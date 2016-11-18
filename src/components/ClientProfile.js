@@ -18,7 +18,10 @@ export default class ClientProfile extends React.Component {
 			token: "",
 			currentPosition: ""
 		};
+	}
 
+	componentWillMount() {
+		this._fetchData();
 	}
 
 	render() {
@@ -52,7 +55,7 @@ export default class ClientProfile extends React.Component {
 							<InputGroup disabled>
 								<Input
 									ref="nascimento"
-									value={this.state.nascimento}
+									value={"Nascimento: " + this.state.nascimento}
 								/>
 							</InputGroup>
 						</ListItem>

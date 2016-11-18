@@ -9,7 +9,10 @@ export default class ServiceCategories extends React.Component {
 		this.state = {
 			listItems: ""
 		};
+	}
 
+	componentWillMount() {
+		this._fetchData();
 	}
 
 	render() {

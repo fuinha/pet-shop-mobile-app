@@ -94,8 +94,10 @@ export default class Signin extends React.Component {
 		}
 		
 		if(this.state.responseStatus == "401") {
-			this._alertOk("Ops! :(",
+			Alert.alert("Ops! :(",
 						"Parece que a senha informada não está correta. Vamos tentar novamente!");
+			this.setState({password: ""});
+			this.refs.password._textInput.focus();
 		}		
 
 		if(this.state.responseStatus == "404") {

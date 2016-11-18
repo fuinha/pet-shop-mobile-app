@@ -13,7 +13,10 @@ export default class PetProfile extends React.Component {
 			porte: "",
 			imagem: ""
 		};
+	}
 
+	componentWillMount() {
+		this._fetchData();
 	}
 
 	render() {

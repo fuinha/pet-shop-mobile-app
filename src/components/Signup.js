@@ -174,7 +174,7 @@ export default class Signup extends React.Component {
 		catch ({code, message}) {
 			console.warn("Cannot open date picker", message);
 		}
-		
+		this.refs.telefone._textInput.focus();		
 	}
 
 	_addClient() {
@@ -187,6 +187,7 @@ export default class Signup extends React.Component {
 			body: JSON.stringify( {
 				nome: this.state.nome,
 				email: this.state.email,
+				nascimento: this.state.nascimento,
 				telefone: this.state.telefone,
 				endereco: this.state.endereco,
 				cidade: this.state.cidade,

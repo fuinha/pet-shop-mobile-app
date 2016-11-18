@@ -116,7 +116,7 @@ export default class PetForm extends React.Component {
 		catch ({code, message}) {
 			console.warn("Cannot open date picker", message);
 		}
-		
+		this.refs.telefone._textInput.focus();
 	}
 
 	_goToView(viewName, viewState) {
