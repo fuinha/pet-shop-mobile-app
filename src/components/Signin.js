@@ -1,5 +1,5 @@
 import React from 'react';
-import { AsyncStorage, View, Text, Alert } from 'react-native';
+import { AsyncStorage, StyleSheet, View, Text, Alert } from 'react-native';
 import axios from 'axios';
 import { Container, Content, List, ListItem, InputGroup, Icon, Input, Button } from 'native-base';
 
@@ -14,7 +14,7 @@ export default class Signin extends React.Component {
 		return(
 			<Container>
 				<Content>
-					<Text>Entrar</Text>
+					<Text style={styles.titulo}>Informe e-mail e senha cadastrados para entrar no aplicativo</Text>
 					<List>
 						<ListItem>
 							<InputGroup>
@@ -41,8 +41,8 @@ export default class Signin extends React.Component {
 							</InputGroup>
 						</ListItem>
 					</List>
-					<Button onPress={() => this._login()}>Entrar</Button>
-					<Button onPress={() => this._goToView("Login", "")}>Voltar</Button>
+					<Button rounded bordered block style={styles.btEntrar} onPress={() => this._login()}>Entrar</Button>
+					<Button rounded bordered block style={styles.btVoltar} onPress={() => this._goToView("Login", "")}>Voltar</Button>
 					<Text>{this.state.response}</Text>
 				</Content>
 			</Container>
@@ -163,3 +163,20 @@ export default class Signin extends React.Component {
 	}
 
 }
+
+const styles = StyleSheet.create( {
+	titulo: {
+		textAlign: "center"
+	},
+	buttons: {
+		margin: 20
+	},
+	btEntrar: {
+    	margin: 20,
+    	marginBottom: 5
+  	},
+  	btVoltar: {
+    	margin: 20,
+    	marginTop: 10
+  	}
+});

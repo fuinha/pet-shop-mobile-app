@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View, Image } from 'react-native';
-import { Container, Header, Content, Card, CardItem, Footer, FooterTab, Button } from 'native-base';
+import { Container, Header, Title, Content, Card, CardItem, Footer, FooterTab, Button } from 'native-base';
 
 export default class PetProfile extends React.Component {
 
@@ -23,10 +23,10 @@ export default class PetProfile extends React.Component {
 		return(
 
 			<Container>
-				<Header>
-					<Text>O Boticão - Pet Profiles</Text>
-				</Header>
-				<Content>
+				<Header style={styles.header}>
+						<Title style={styles.title}>Meus Pets</Title>
+					</Header>
+					<Content style={styles.content}>
 					<Card dataArray={this.state.listItems}
 						renderRow={
 							(item) =>
@@ -47,8 +47,7 @@ export default class PetProfile extends React.Component {
 					}>
 
 					</Card>
-					<Button onPress={() => this._fetchData()}>Baixar Lista</Button>
-					<Button onPress={() => this._goToView("PetForm", this.props.authState)}>Adicionar</Button>
+					<Button rounded bordered block style={styles.btAdicionar} onPress={() => this._goToView("PetForm", this.props.authState)}>Adicionar</Button>
 
 				</Content>
 				<Footer>
@@ -131,3 +130,21 @@ export default class PetProfile extends React.Component {
 		}
 	}
 }
+
+const styles = StyleSheet.create( {
+	backgroundImage: {
+		flex: 1
+	},
+	header: {
+		backgroundColor: "#f0f0f0"
+	},
+	title: {
+		color: "#6d6e70"
+	},
+	content: {
+		backgroundColor: 'rgba(255,255,255,0.6)'	
+	},
+	btAdicionar: {
+    	margin: 20
+  	}
+});

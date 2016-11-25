@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, AsyncStorage, ScrollView, StyleSheet, Text, View, Image } from 'react-native';
-import { Container, Header, Content, List, ListItem, InputGroup, Input, Footer, FooterTab, Button } from 'native-base';
+import { Container, Header, Title, Content, List, ListItem, InputGroup, Input, Footer, FooterTab, Button } from 'native-base';
 
 export default class ClientProfile extends React.Component {
 
@@ -28,10 +28,11 @@ export default class ClientProfile extends React.Component {
 		return(
 
 			<Container>
-				<Header>
-					<Text>O Boticão - Client Profile</Text>
-				</Header>
-				<Content>
+					<Header style={styles.header}>
+						<Title style={styles.title}>Cliente</Title>
+					</Header>
+					<Content style={styles.content}>
+				
 					<Image src={this.state.imagem}></Image>
 					
 					<List>
@@ -106,7 +107,8 @@ export default class ClientProfile extends React.Component {
 					
 						<Button onPress={() => this._goToView("Schedule", this.props.authState)}>Agenda</Button>
 					</FooterTab>
-				</Footer>     			
+				</Footer>
+						
       		</Container>
 		)
 	}
@@ -201,3 +203,18 @@ export default class ClientProfile extends React.Component {
     	Alert.alert("Posição atual", this.state.currentPosition);
 	}
 }
+
+const styles = StyleSheet.create( {
+	backgroundImage: {
+		flex: 1
+	},
+	header: {
+		backgroundColor: "#f0f0f0"
+	},
+	title: {
+		color: "#6d6e70"
+	},
+	content: {
+		backgroundColor: 'rgba(255,255,255,0.6)'	
+	}
+});

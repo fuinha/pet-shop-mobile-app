@@ -1,7 +1,8 @@
 import React from 'react';
-import { Alert, DatePickerAndroid, Picker, Item, ScrollView, StyleSheet, Text, View, Image } from 'react-native';
-import { Container, Header, Content, List, ListItem, InputGroup, Input, Footer, FooterTab, Button } from 'native-base';
+import { Alert, DatePickerAndroid, ScrollView, Picker, StyleSheet, Text, TextInput, View, Image } from 'react-native';
+import { Container, Header, Title, Content, List, ListItem, InputGroup, Input, Footer, FooterTab, Button } from 'native-base';
 import Cloudinary from 'cloudinary-core';
+import ModalPicker from 'react-native-modal-picker';
 
 export default class PetForm extends React.Component {
 
@@ -18,16 +19,27 @@ export default class PetForm extends React.Component {
 	}
 
 	render() {
+
+		let index = 0;
+		const data = [
+			{ key: index++, section:true, label: "Raça"},
+			{ key: index++, label: "Pastor Alemão"},
+			{ key: index++, label: "Collie"},
+			{ key: index++, label: "Pug"},
+			{ key: index++, label: "Shih Tzu"},
+			{ key: index++, label: "Lhasa Apso"}
+		]
+
 		return(
 
 			<Container>
-				<Header>
-					<Text>O Boticão - Adicionar Pet</Text>
-				</Header>
-				<Content>
+				<Header style={styles.header}>
+						<Title style={styles.title}>Novo Pet</Title>
+					</Header>
+					<Content style={styles.content}>
 					<Image src={this.state.imagem}></Image>
 					
-					<List>
+					<List style={{ margin: 10, marginLeft: 20, marginRight: 20, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4}}>
 						<ListItem>
 							<InputGroup>
 								<Input
@@ -50,8 +62,12 @@ export default class PetForm extends React.Component {
 								/>
 							</InputGroup>
 						</ListItem>
-						<ListItem>
+
+						
+					</List>								
+						<View style={{ margin: 10, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4, marginLeft: 20, marginRight: 20 }}>
 							<Picker
+								style={{marginLeft: 20, marginRight: 20}}
 								selectedValue={this.state.raca}
 								onValueChange={(raca) => this.setState({raca: raca})}>
 
@@ -63,9 +79,10 @@ export default class PetForm extends React.Component {
 								<Picker.Item label="Lhasa Apso" value="Lhasa Apso" />
 
 							</Picker>
-						</ListItem>
-						<ListItem>
+						</View>
+						<View style={{ margin: 10, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4, marginLeft: 20, marginRight: 20 }}>
 							<Picker
+								style={{marginLeft: 20, marginRight: 20}}
 								selectedValue={this.state.porte}
 								onValueChange={(porte) => this.setState({porte: porte})}>
 
@@ -76,22 +93,20 @@ export default class PetForm extends React.Component {
 								<Picker.Item label="Grande" value="Grande" />
 								<Picker.Item label="Gigante" value="Gigante" />
 
-							</Picker>							
-						</ListItem>
-					</List>
-
-					<Button onPress={() => this._pushData()}>Salvar</Button>
+							</Picker>						
+						</View>
+					<Button rounded bordered block style={styles.btSalvar} onPress={() => this._pushData()}>Salvar</Button>
 
 				</Content>
 				<Footer>
 					<FooterTab>
-						<Button onPress={() => this._goToView("ClientProfile", this.props.authState)}>Eu</Button>
+						<Button onPress={() => this._goToView("ClientProfile")}>Eu</Button>
 					
-						<Button onPress={() => this._goToView("PetProfile", this.props.authState)}>Pets</Button>
+						<Button onPress={() => this._goToView("PetProfile")}>Pets</Button>
 					
 						<Button onPress={() => this._goToView("ServiceCategories", "")}>Serviços</Button>
 					
-						<Button onPress={() => this._goToView("Schedule", this.props.authState)}>Agenda</Button>
+						<Button onPress={() => this._goToView("Schedule")}>Agenda</Button>
 					</FooterTab>
 				</Footer>     			
       		</Container>
@@ -177,3 +192,29 @@ export default class PetForm extends React.Component {
 
 	}
 }
+
+const styles = StyleSheet.create( {
+	backgroundImage: {
+		flex: 1
+	},
+	header: {
+		backgroundColor: "#f0f0f0"
+	},
+	title: {
+		color: "#6d6e70"
+	},
+	content: {
+		backgroundColor: 'rgba(255,255,255,0.6)'	
+	},
+	picker: {
+		borderColor: "#fff",
+		flexDirection: "row",
+		justifyContent: "flex-start"
+	},
+	optionText: {
+
+	},
+	btSalvar: {
+    	margin: 20
+  	}
+});

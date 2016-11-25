@@ -1,33 +1,32 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
-import { Container, Header, Content, Footer, FooterTab, Button } from 'native-base';
+import { Container, Header, Title, Content, Footer, FooterTab, Button } from 'native-base';
 
 export default class Menu extends React.Component {
 
 	render() {
 		return(
 			<Container>
-				<Header>
-					<Text>O Boticão - {this.props.authState.email}</Text>
-				</Header>
-				<Content>
-					<Image source={{uri: "http://oapinfo.com/images/login.jpg" }}
-               			style={{flex: 1}}>
-               			<View style={{flex: 1, backgroundColor: 'rgba(255,255,255,0.6)'}}>
-               			</View>
-               		</Image>
-				</Content>
-				<Footer>
-					<FooterTab>
-						<Button onPress={() => this._goToView("ClientProfile", this.props.authState)}>Eu</Button>
+				<Image source={{uri: "http://oapinfo.com/images/menu.jpg" }}
+               			style={styles.backgroundImage}>
+					<Header style={styles.header}>
+						<Title style={styles.title}>Bem vindo!</Title>
+					</Header>
+					<Content style={styles.content}>
+
+					</Content>
+					<Footer>
+						<FooterTab>
+							<Button onPress={() => this._goToView("ClientProfile", this.props.authState)}>Eu</Button>
 					
-						<Button onPress={() => this._goToView("PetProfile", this.props.authState)}>Pets</Button>
+							<Button onPress={() => this._goToView("PetProfile", this.props.authState)}>Pets</Button>
 					
-						<Button onPress={() => this._goToView("ServiceCategories", "")}>Serviços</Button>
+							<Button onPress={() => this._goToView("ServiceCategories", "")}>Serviços</Button>
 					
-						<Button onPress={() => this._goToView("Schedule", this.props.authState)}>Agenda</Button>
-					</FooterTab>
-				</Footer>     			
+							<Button onPress={() => this._goToView("Schedule", this.props.authState)}>Agenda</Button>
+						</FooterTab>
+					</Footer> 
+				</Image>    			
       		</Container>
 		)
 	}
@@ -39,3 +38,18 @@ export default class Menu extends React.Component {
 		)
 	}
 }
+
+const styles = StyleSheet.create( {
+	backgroundImage: {
+		flex: 1
+	},
+	header: {
+		backgroundColor: "#f0f0f0"
+	},
+	title: {
+		color: "#6d6e70"
+	},
+	content: {
+		backgroundColor: 'rgba(255,255,255,0.6)'	
+	}
+});

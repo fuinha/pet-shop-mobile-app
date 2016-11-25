@@ -7,18 +7,19 @@ export default class Login extends React.Component {
 	render() {
 		return(
 			<Container>
-        		<Image source={{uri: "http://oapinfo.com/images/login.jpg" }}
-               			style={{flex: 1}}>
-          			<View style={{flex: 1, backgroundColor: 'rgba(255,255,255,0.6)'}}>
+        		<Image source={{uri: "http://oapinfo.com/images/login3.jpg" }}
+               			style={styles.image}>
+          			<View style={styles.viewMain}>
 
-            			<View style={{flex: 1}}>
-              				<Text>O Boticão</Text>
-              				<Text>Centro de Estética Pet</Text>
+            			<View style={styles.view}>
+              				<Text style={styles.title}>O Boticão</Text>
+              				<Text style={styles.description}>Centro de Estética Pet</Text>
             			</View>
             			<View>
-              				<Button large rounded block onPress={() => this._goToView('Signin')}> Entrar </Button>
-              				<Button large rounded block onPress={() => this._goToView('Signup')}> Cadastrar </Button>
-            			</View> 
+              				<Button style={styles.btEntrar} large bordered rounded block onPress={() => this._goToView('Signin')}> Entrar </Button>
+              				<Button style={styles.btCadastrar} large bordered rounded block onPress={() => this._goToView('Signup')}> Cadastrar </Button>
+            			</View>
+
           			</View>
         		</Image>
       		</Container>
@@ -34,6 +35,16 @@ export default class Login extends React.Component {
 
 
 	const styles = StyleSheet.create({
+		image: {
+			flex: 1
+		},
+		viewMain: {
+			flex: 1,
+			backgroundColor: 'rgba(255,255,255,0.6)'			
+		},
+		view: {
+			flex: 1
+		},
   		container: {
     		flex: 1,
     		justifyContent: 'center',
@@ -51,12 +62,15 @@ export default class Login extends React.Component {
 	  	},
 	  	buttons: {
 	    	flex: 1,
-	    	justifyContent: 'center'
+	    	justifyContent: 'center',
+	    	margin: 20
 	  	},
 	  	btEntrar: {
-	    	margin: 20
+	    	margin: 20,
+	    	marginBottom: 5
 	  	},
 	  	btCadastrar: {
-	    	margin: 20
+	    	margin: 20,
+	    	marginTop: 10
 	  	}
 	});
