@@ -20,16 +20,6 @@ export default class PetForm extends React.Component {
 
 	render() {
 
-		let index = 0;
-		const data = [
-			{ key: index++, section:true, label: "Raça"},
-			{ key: index++, label: "Pastor Alemão"},
-			{ key: index++, label: "Collie"},
-			{ key: index++, label: "Pug"},
-			{ key: index++, label: "Shih Tzu"},
-			{ key: index++, label: "Lhasa Apso"}
-		]
-
 		return(
 
 			<Container>
@@ -69,9 +59,9 @@ export default class PetForm extends React.Component {
 							<Picker
 								style={{marginLeft: 20, marginRight: 20}}
 								selectedValue={this.state.raca}
-								onValueChange={(raca) => this.setState({raca: raca})}>
+								onValueChange={(raca) => this._pickerFunc(raca)}>
 
-								<Picker.Item label="Raça" value="null" />
+								<Picker.Item label="- Raça -" value="null" />
 								<Picker.Item label="Pastor Alemão" value="Pastor Alemão" />
 								<Picker.Item label="Collie" value="Collie" />
 								<Picker.Item label="Pug" value="Pug" />
@@ -86,7 +76,7 @@ export default class PetForm extends React.Component {
 								selectedValue={this.state.porte}
 								onValueChange={(porte) => this.setState({porte: porte})}>
 
-								<Picker.Item label="Porte" value="null" />
+								<Picker.Item label="- Porte -" value="null" />
 								<Picker.Item label="Mini" value="Mini" />
 								<Picker.Item label="Pequeno" value="Pequeno" />
 								<Picker.Item label="Médio" value="Médio" />
@@ -100,17 +90,21 @@ export default class PetForm extends React.Component {
 				</Content>
 				<Footer>
 					<FooterTab>
-						<Button onPress={() => this._goToView("ClientProfile")}>Eu</Button>
+						<Button onPress={() => this._goToView("ClientProfile", this.props.authState)}>Eu</Button>
 					
-						<Button onPress={() => this._goToView("PetProfile")}>Pets</Button>
+						<Button onPress={() => this._goToView("PetProfile", this.props.authState)}>Pets</Button>
 					
 						<Button onPress={() => this._goToView("ServiceCategories", "")}>Serviços</Button>
 					
-						<Button onPress={() => this._goToView("Schedule")}>Agenda</Button>
+						<Button onPress={() => this._goToView("Schedule", this.props.authState)}>Agenda</Button>
 					</FooterTab>
 				</Footer>     			
       		</Container>
 		)
+	}
+
+	_pickerFunc(raca) {
+		this.setState({raca: raca});
 	}
 
 	async _showDataPicker() {

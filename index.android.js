@@ -15,7 +15,7 @@ export default class oboticao extends Component {
   render() {
     return (
       
-      <Navigator initialRoute={{ name: 'PetForm' }}
+      <Navigator initialRoute={{ name: 'Schedule' }}
                  renderScene={ this.renderScene }
       />
       
