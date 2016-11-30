@@ -67,10 +67,12 @@ export default class Login extends React.Component {
 	  	},
 	  	btEntrar: {
 	    	margin: 20,
-	    	marginBottom: 5
+	    	marginBottom: 5,
+	    	borderRadius: 5
 	  	},
 	  	btCadastrar: {
 	    	margin: 20,
-	    	marginTop: 10
+	    	marginTop: 10,
+	    	borderRadius: 5
 	  	}
 	});

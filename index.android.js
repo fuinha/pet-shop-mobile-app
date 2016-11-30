@@ -15,7 +15,7 @@ export default class oboticao extends Component {
   render() {
     return (
       
-      <Navigator initialRoute={{ name: 'Schedule' }}
+      <Navigator initialRoute={{ name: 'Login' }}
                  renderScene={ this.renderScene }
       />
       

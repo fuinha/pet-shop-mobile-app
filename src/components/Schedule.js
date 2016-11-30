@@ -16,13 +16,12 @@ export default class Schedule extends React.Component {
 			selectedService: [],
 			taxiDog: false,
 			obs: "",
-			value: []
+			value: {v: 0, lineStyle: {}, textStyle: {color: "#fff"}}
 		};
 	}
 
 	componentWillMount() {
-		//this._fetchPetData();
-		
+		this._fetchPetData();
 	}
 
 	render() {
@@ -59,15 +58,20 @@ export default class Schedule extends React.Component {
 
 								var service = new Array(serviceValue, this.state.servicesByEspecies[servicePosition][2], this.state.servicesByEspecies[servicePosition][3]);
 								this.setState({selectedService: service});
-								this.setState({value[2]: this.state.servicesByEspecies[servicePosition][3]});
-								this.setState({value[1]: {borderWidth: 1, borderColor: "#6098f2", backgroundColor: "#6098f2"});
-								this.setState({value[0]: {color: "#6098f2"}});
+
+								console.log("Picker servicesByEspecies value: " + this.state.servicesByEspecies[servicePosition][2]);
+
+								var values = {v: this.state.servicesByEspecies[servicePosition][2],null,null};
+
+								console.log("Picker values: " + values.v);
 
 							}}>
 
-							{ !this.state.selectedPet[0] ?
+							{ 
+								!this.state.selectedPet[0] ?
 								<Picker.Item key="0" label="- Qual serviço? -" value="0" />
-								: this.state.servicesByEspecies.map((service) => {return <Picker.Item key={service[0]} label={service[1]} value={service[0]} />})
+								:this.state.servicesByEspecies.map((service) => {return <Picker.Item key={service[0]} label={service[1]} value={service[0]} />})
+								
 							}
 
 						</Picker>						
@@ -96,7 +100,7 @@ export default class Schedule extends React.Component {
 
 							{ !this.state.selectedService[0] ?
 								<Picker.Item key="0" label="- Qual horário? -" value="0" />
-								: this.state.availableHours.map((hour) => {return <Picker.Item key={hour[0]} label={hour[1]} value={hour[0]} />})
+								:this.state.availableHours.map((hour) => {return <Picker.Item key={hour[0]} label={hour[1]} value={hour[0]} />})
 							}
 
 						</Picker>						
@@ -122,9 +126,15 @@ export default class Schedule extends React.Component {
 					/>
 					</View>
 
-					<View style={this.state.value[0]}>
-							<Text style={this.state.value[1]}>Valor: R$ {this.state.value[2]} (já incluso táxi dog: R$ 15)"</Text>
+					<View style={this.state.value.lineStyle}>
+							<Text style={this.state.value.textStyle}>Valor: R$ {this.state.value.v} (já incluso táxi dog: R$ 15)"</Text>
 					</View>
+
+					{ 
+						this.state.value[0] ?
+						this._valueLineStyle("true")
+						:this._valueLineStyle("false")
+					}
 					
 					<Button rounded bordered block style={styles.btSalvar} onPress={() => this._pickerFunc()}>Agendar</Button>
 
@@ -144,9 +154,19 @@ export default class Schedule extends React.Component {
 		)
 	}
 
+	_valueLineStyle(isValueSetted) {
+		if(!isValueSetted) {
+			var values = {null,
+						lineStyle: {borderWidth: 1, borderColor: "#6098f2"},
+						textStyle: {color: "#6098f2"}};
+			this.setState({value: values});
+		}
+		
+	}
+
 	_taxiDogCheckBox() {
 		this.setState({taxiDog: !this.state.taxiDog});
-		this.setState({value: this.state.value + 15});
+		//this.setState({value: this.state.value + 15});
 	}
 
 	async _showDataPicker() {
@@ -285,8 +305,6 @@ export default class Schedule extends React.Component {
 			}
 
 			listItems.unshift([0, "- Qual serviço? -"]);
-
-
 
 			this.setState({servicesByEspecies:  listItems});
 
