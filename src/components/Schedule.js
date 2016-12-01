@@ -9,14 +9,18 @@ export default class Schedule extends React.Component {
 		this.state = {
 			day: "",
 			selectedHour: [],
-			availableHours: [],
+			availableHoursByDay: [],
 			petsByClient: [],
 			selectedPet: [],
 			servicesByEspecies: [],
 			selectedService: [],
 			taxiDog: false,
+			taxiDogText: "",
+			taxiDogValue: 0,
 			obs: "",
-			value: {v: 0, lineStyle: {}, textStyle: {color: "#fff"}}
+			value: {v: 0},
+			valueText: "",
+			valueStyles: {lineStyle: {marginTop: 5, marginBottom: 5}, textStyle: {color: "#fff"}}
 		};
 	}
 
@@ -61,9 +65,11 @@ export default class Schedule extends React.Component {
 
 								console.log("Picker servicesByEspecies value: " + this.state.servicesByEspecies[servicePosition][2]);
 
-								var values = {v: this.state.servicesByEspecies[servicePosition][2],null,null};
+								var values = {v: this.state.servicesByEspecies[servicePosition][2]};
 
 								console.log("Picker values: " + values.v);
+
+								this.setState({value: values}, () => this._valueStyles());
 
 							}}>
 
@@ -109,7 +115,7 @@ export default class Schedule extends React.Component {
 
 					<List style={{ margin: 5, marginLeft: 20, marginRight: 20, paddingLeft: 10, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4}}>
 						<ListItem onPress={() => this._taxiDogCheckBox()} >
-							<CheckBox ref="taxidog" checked={this.state.taxiDog} onPress={() => this._taxiDogCheckBox()} />
+							<CheckBox ref="taxidog" checked={this.state.taxiDog} onPress={() => this._verifyTaxiDogValue()} />
 							<Text style={{fontSize: 16}}>Utiliza Táxi Dog?</Text>
 						</ListItem>
 					</List>
@@ -126,15 +132,9 @@ export default class Schedule extends React.Component {
 					/>
 					</View>
 
-					<View style={this.state.value.lineStyle}>
-							<Text style={this.state.value.textStyle}>Valor: R$ {this.state.value.v} (já incluso táxi dog: R$ 15)"</Text>
+					<View style={this.state.valueStyles.lineStyle}>
+							<Text style={this.state.valueStyles.textStyle}> {this.state.valueText} {this.state.taxiDogText}</Text>
 					</View>
-
-					{ 
-						this.state.value[0] ?
-						this._valueLineStyle("true")
-						:this._valueLineStyle("false")
-					}
 					
 					<Button rounded bordered block style={styles.btSalvar} onPress={() => this._pickerFunc()}>Agendar</Button>
 
@@ -154,19 +154,44 @@ export default class Schedule extends React.Component {
 		)
 	}
 
-	_valueLineStyle(isValueSetted) {
-		if(!isValueSetted) {
-			var values = {null,
-						lineStyle: {borderWidth: 1, borderColor: "#6098f2"},
-						textStyle: {color: "#6098f2"}};
-			this.setState({value: values});
+	_valueStyles() {
+		console.log("valueStyle this.state.value.v: " + this.state.value.v);
+		if(this.state.value.v) {
+			var styles = {lineStyle: {borderWidth: 1, borderColor: "#6098f2", marginTop: 5, marginBottom: 5, paddingLeft: 10},
+						  textStyle: {color: "#6098f2"}};
+			this.setState({valueStyles: styles});
+			this.setState({valueText: ("Valor: R$" + this.state.value.v)});
 		}
 		
 	}
 
+	_verifyTaxiDogValue() {
+		if(!this.state.taxiDogValue)
+			this._fetchTaxiDogData();
+		else
+			this._taxiDogCheckBox();
+	}
+
 	_taxiDogCheckBox() {
-		this.setState({taxiDog: !this.state.taxiDog});
-		//this.setState({value: this.state.value + 15});
+		this.setState({taxiDog: !this.state.taxiDog}, () => {
+			var englishValue = {v: this.state.value.v.replace(",", ".")};
+			var floatEnglishValue = {v: parseFloat(englishValue.v)};
+
+			if(this.state.taxiDog) {
+				floatEnglishValue.v = floatEnglishValue.v + this.state.taxiDogValue;
+				englishValue.v = floatEnglishValue.v.toFixed(2).replace(".", ",");
+				this.setState({value: englishValue}, () => this.setState({valueText: ("Valor: R$" + this.state.value.v)}));
+				
+				this.setState({taxiDogText: "(incluso Táxi Dog: R$" + this.state.taxiDogValue.toFixed(2).replace(".", ",") + ")"});
+			}
+			else {
+				floatEnglishValue.v = floatEnglishValue.v - this.state.taxiDogValue;
+				englishValue.v = floatEnglishValue.v.toFixed(2).replace(".", ",");
+				this.setState({value: englishValue}, () => this.setState({valueText: ("Valor: R$" + this.state.value.v)}));
+				this.setState({valueText: ("Valor: R$" + this.state.value.v)})
+				this.setState({taxiDogText: ""});
+			}
+		});
 	}
 
 	async _showDataPicker() {
@@ -243,15 +268,9 @@ export default class Schedule extends React.Component {
 				index = index + 1;
 			}
 
-			console.log("Before unshift: " + listItems);
-
 			listItems.unshift([0, "- Para qual pet? -"]);
 
-			console.log("After unshift: " + listItems);
-
 			this.setState({petsByClient:  listItems});
-
-			console.log("PetsByClient: " + this.state.petsByClient);
 		}
 		catch(error) {
 			console.log("error: " + error);
@@ -276,15 +295,15 @@ export default class Schedule extends React.Component {
 			.then(
 				(responseJson) => {
 					this.setState({responseJson: responseJson});
-					this._analyzeFetchServiceResponse();
+					this._analyzeServiceResponse();
 				}
 			)
 			.catch((error) => console.error(error));
 	}
 
-	_analyzeFetchServiceResponse() {
+	_analyzeServiceResponse() {
 		if(this.state.responseStatus == "200") {
-			this._treatFetchServiceResponseContent();
+			this._treatServiceResponseContent();
 		}
 
 		else {
@@ -294,7 +313,7 @@ export default class Schedule extends React.Component {
 
 	}
 
-	_treatFetchServiceResponseContent() {
+	_treatServiceResponseContent() {
 		try {
 			console.log("treatResponseContent");
 			var listItems = new Array();
@@ -307,8 +326,107 @@ export default class Schedule extends React.Component {
 			listItems.unshift([0, "- Qual serviço? -"]);
 
 			this.setState({servicesByEspecies:  listItems});
+		}
+		catch(error) {
+			console.log("error: " + error);
+		}
+	}
 
-			console.log("servicesByEspecies: " + this.state.servicesByEspecies);
+	_fetchAvailableHoursData() {
+
+		fetch("http://192.168.0.103:3000/api/v1/availableHoursByDay?day=" + this.state.day,
+			{
+				method: 'GET',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+			}})
+			.then(
+				(response) => {
+					this.setState({responseStatus: response["status"]});
+					return response.json();
+				}
+			)
+			.then(
+				(responseJson) => {
+					this.setState({responseJson: responseJson});
+					this._analyzeAvailableHoursResponse();
+				}
+			)
+			.catch((error) => console.error(error));
+	}
+
+	_analyzeAvailableHoursResponse() {
+		if(this.state.responseStatus == "200") {
+			this._treatAvailableHoursResponseContent();
+		}
+
+		else {
+			Alert.alert("Ops! :(",
+						"Algo inesperado ocorreu no servidor. Tente novamente em alguns minutos, por favor!");
+		}
+
+	}
+
+	_treatAvailableHoursResponseContent() {
+		try {
+			console.log("treatResponseContent");
+			var listItems = new Array();
+			var index = 0;
+			for(var key in this.state.responseJson) {
+				listItems[index] = new Array(key, this.state.responseJson[key]["descricao"], this.state.responseJson[key]["valor"], this.state.responseJson[key]["duracao"]);
+				index = index + 1;
+			}
+
+			listItems.unshift([0, "- Qual horário? -"]);
+
+			this.setState({availableHoursByDay:  listItems});
+		}
+		catch(error) {
+			console.log("error: " + error);
+		}
+	}
+
+	_fetchTaxiDogData() {
+
+		fetch("http://192.168.0.103:3000/api/v1/taxiDogByClient?clientEmail=" + this.props.authState.email,
+			{
+				method: 'GET',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+			}})
+			.then(
+				(response) => {
+					this.setState({responseStatus: response["status"]});
+					return response.json();
+				}
+			)
+			.then(
+				(responseJson) => {
+					this.setState({responseJson: responseJson});
+					this._analyzeTaxiDogResponse();
+				}
+			)
+			.catch((error) => console.error(error));
+	}
+
+	_analyzeTaxiDogResponse() {
+		if(this.state.responseStatus == "202") {
+			this._treatTaxiDogResponseContent();
+		}
+
+		else {
+			Alert.alert("Ops! :(",
+						"Algo inesperado ocorreu no servidor. Tente novamente em alguns minutos, por favor!");
+		}
+
+	}
+
+	_treatTaxiDogResponseContent() {
+		try {
+			
+			this.setState({taxiDogValue:  parseFloat(this.state.responseJson["taxi_dog_value"])}, () => this._taxiDogCheckBox());
 		}
 		catch(error) {
 			console.log("error: " + error);
@@ -389,6 +507,8 @@ const styles = StyleSheet.create( {
 
 	},
 	btSalvar: {
-    	margin: 20
+    	marginLeft: 20,
+    	marginRight: 20,
+    	marginTop: 5
   	}
 });
