@@ -9,13 +9,15 @@ import PetProfile from './src/components/PetProfile.js';
 import PetForm from './src/components/PetForm.js';
 import ServiceCategories from './src/components/ServiceCategories.js';
 import Services from './src/components/Services.js';
-import Schedule from './src/components/Schedule.js';
+import ScheduleList from './src/components/ScheduleList.js';
+import NewSchedule from './src/components/NewSchedule.js';
+import ScheduleDetail from './src/components/ScheduleDetail.js';
 
 export default class oboticao extends Component {
   render() {
     return (
       
-      <Navigator initialRoute={{ name: 'Login' }}
+      <Navigator initialRoute={{ name: 'NewSchedule' }}
                  renderScene={ this.renderScene }
       />
       
@@ -50,8 +52,14 @@ export default class oboticao extends Component {
     if(route.name == 'Services')
       return <Services navigator={navigator} categoryId={route.categoryId} />
 
-    if(route.name == 'Schedule')
-      return <Schedule navigator={navigator} authState={route.state} />
+    if(route.name == 'ScheduleList')
+      return <ScheduleList navigator={navigator} authState={route.state} />
+
+    if(route.name == 'NewSchedule')
+      return <NewSchedule navigator={navigator} authState={route.state} />
+
+    if(route.name == 'ScheduleDetail')
+      return <ScheduleDetail navigator={navigator} authState={route.state} />
 
   }
 

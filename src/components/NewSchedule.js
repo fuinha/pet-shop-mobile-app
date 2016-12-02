@@ -4,12 +4,12 @@ import { Container, Header, Title, Content, List, ListItem, Input, InputGroup, C
 import  modifiedTheme from '../themes/modifiedTheme.js';
 import  normalTheme from '../themes/normalTheme.js';
 
-export default class Schedule extends React.Component {
+export default class NewSchedule extends React.Component {
 
 	constructor() {
 		super();
 		this.state = {
-			day: "",
+			day: "- Qual dia -?",
 			selectedHour: "",
 			availableHoursByDay: [],
 			petsByClient: [],
@@ -28,7 +28,7 @@ export default class Schedule extends React.Component {
 	}
 
 	componentWillMount() {
-		this._fetchPetData();
+		//this._fetchPetData();
 	}
 
 	render() {
@@ -36,7 +36,7 @@ export default class Schedule extends React.Component {
 
 			<Container>
 				<Header style={styles.header}>
-					<Title style={styles.title}>Agendamento</Title>
+					<Title style={styles.title}>Novo Agendamento</Title>
 				</Header>
 				<Content style={styles.content}>
 
@@ -86,14 +86,12 @@ export default class Schedule extends React.Component {
 						</Picker>						
 					</View>
 
-					<View style={{ margin: 5, marginLeft: 20, marginRight: 20, paddingLeft: 25, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4}}>
-					<Input
-						style={{fontSize: 16}}
-						ref="dia"
-						placeholder="Qual dia?"
-						value={this.state.day}
-						onFocus={() => this._showDataPicker()}
-					/>
+					<View style={{ margin: 5, marginLeft: 20, marginRight: 20, height: 50, paddingLeft: 25, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4}}>
+					
+					<Text style={{fontSize: 16}} ref="dia" onPress={() => this._showDataPicker()}>
+						{this.state.day}
+					</Text>
+					
 					</View>
 
 					<View style={{ margin: 5, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4, marginLeft: 20, marginRight: 20 }}>
@@ -139,7 +137,7 @@ export default class Schedule extends React.Component {
 							<Text style={this.state.valueStyles.textStyle}> {this.state.valueText} {this.state.taxiDogText}</Text>
 					</View>
 					
-					<Button rounded bordered block style={styles.btSalvar} onPress={() => this._pickerFunc()}>Agendar</Button>
+					<Button rounded bordered block style={styles.btSalvar} onPress={() => this._pushData()}>Salvar</Button>
 
 				</Content>
 				<Footer>
@@ -448,7 +446,7 @@ export default class Schedule extends React.Component {
 
 	_pushData() {
 
-		fetch("http://192.168.0.101:3000/api/v1/newPet",
+		fetch("http://192.168.0.103:3000/api/v1/newSchedule",
 			{
 				method: 'POST',
 				headers: {
@@ -456,11 +454,14 @@ export default class Schedule extends React.Component {
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					nome: this.state.nome,
-					nascimento: this.state.nascimento,
-					raca: this.state.raca,
-					porte: this.state.porte,
-					clienteEmail: this.props.authState.email
+					dia: this.state.day,
+					hora: this.state.selectedHour,
+					clienteEmail: this.props.authState.email,
+					petId: this.state.selectedPet[0],
+					servicoId: this.state.selectedService[0],
+					taxiDog: this.state.taxiDogValue,
+					valor: parseFloat(this.state.value.v),
+					obs: this.state.obs
 				})
 			})
 			.then(
@@ -480,9 +481,8 @@ export default class Schedule extends React.Component {
 
 	_analyzeResponse() {
 		if(this.state.responseStatus == "201") {
-			console.log("analyzeResponse");
-			Alert.alert("Sucesso!",
-						"Seu amigo foi adicionado!",
+			Alert.alert("Legal!",
+						"Seu horário foi salvo. Lembre-se de efetuar o pagamento para que ele seja efetivado!",
 						[{text: "Ok", onPress: () => this._goToView('PetProfile', this.props.authState) }]);
 		}
 

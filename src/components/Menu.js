@@ -23,7 +23,7 @@ export default class Menu extends React.Component {
 					
 							<Button onPress={() => this._goToView("ServiceCategories", "")}>Serviços</Button>
 					
-							<Button onPress={() => this._goToView("Schedule", this.props.authState)}>Agenda</Button>
+							<Button onPress={() => this._goToView("ScheduleList", this.props.authState)}>Agenda</Button>
 						</FooterTab>
 					</Footer> 
 				</Image>    			
