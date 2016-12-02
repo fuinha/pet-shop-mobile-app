@@ -1,6 +1,8 @@
 import React from 'react';
 import { Alert, StyleSheet, Picker, Text, TextInput, View, Image, DatePickerAndroid } from 'react-native';
 import { Container, Header, Title, Content, List, ListItem, Input, InputGroup, CheckBox, Footer, FooterTab, Button } from 'native-base';
+import  modifiedTheme from '../themes/modifiedTheme.js';
+import  normalTheme from '../themes/normalTheme.js';
 
 export default class Schedule extends React.Component {
 
@@ -8,7 +10,7 @@ export default class Schedule extends React.Component {
 		super();
 		this.state = {
 			day: "",
-			selectedHour: [],
+			selectedHour: "",
 			availableHoursByDay: [],
 			petsByClient: [],
 			selectedPet: [],
@@ -20,7 +22,8 @@ export default class Schedule extends React.Component {
 			obs: "",
 			value: {v: 0},
 			valueText: "",
-			valueStyles: {lineStyle: {marginTop: 5, marginBottom: 5}, textStyle: {color: "#fff"}}
+			valueStyles: {lineStyle: {marginTop: 5, marginBottom: 5}, textStyle: {color: "#fff"}},
+			theme: normalTheme
 		};
 	}
 
@@ -95,18 +98,18 @@ export default class Schedule extends React.Component {
 
 					<View style={{ margin: 5, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4, marginLeft: 20, marginRight: 20 }}>
 						<Picker
+							ref="hour"
 							style={{marginLeft: 20, marginRight: 20}}
-							selectedValue={this.state.selectedHour[0]}
+							selectedValue={this.state.selectedHour}
 							onValueChange={(hourValue, hourPosition) => {
 
-								var hour = new Array(hourValue, this.state.availableHours[hourPosition][2], this.state.availableHours[hourPosition][3]);
-								this.setState({selectedHour: hour});
+								this.setState({selectedHour: hourValue}, () => this._verifyHourWithouTaxiDog());
 
 							}}>
 
-							{ !this.state.selectedService[0] ?
+							{ !this.state.day ?
 								<Picker.Item key="0" label="- Qual horário? -" value="0" />
-								:this.state.availableHours.map((hour) => {return <Picker.Item key={hour[0]} label={hour[1]} value={hour[0]} />})
+								:this.state.availableHoursByDay.map((hour) => {return <Picker.Item key={hour[0]} label={hour[1]} value={hour[1]} />})
 							}
 
 						</Picker>						
@@ -114,9 +117,9 @@ export default class Schedule extends React.Component {
 
 
 					<List style={{ margin: 5, marginLeft: 20, marginRight: 20, paddingLeft: 10, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4}}>
-						<ListItem onPress={() => this._taxiDogCheckBox()} >
-							<CheckBox ref="taxidog" checked={this.state.taxiDog} onPress={() => this._verifyTaxiDogValue()} />
-							<Text style={{fontSize: 16}}>Utiliza Táxi Dog?</Text>
+						<ListItem onPress={() => this._verifyTaxiDogValue()} >
+							<CheckBox ref="taxidog" theme={this.state.theme} checked={this.state.taxiDog} onPress={() => this._verifyTaxiDogValue()} />
+							<Text style={{fontSize: 16, color: "#484949"}}>Utiliza Táxi Dog?</Text>
 						</ListItem>
 					</List>
 
@@ -166,10 +169,21 @@ export default class Schedule extends React.Component {
 	}
 
 	_verifyTaxiDogValue() {
-		if(!this.state.taxiDogValue)
-			this._fetchTaxiDogData();
-		else
-			this._taxiDogCheckBox();
+		if(this.state.selectedHour != "8:00" && this.state.selectedHour != "8:30")
+			if(!this.state.taxiDogValue)
+				this._fetchTaxiDogData();
+			else
+				this._taxiDogCheckBox();
+	}
+
+	_verifyHourWithouTaxiDog() {
+		if(this.state.selectedHour != "8:00" && this.state.selectedHour != "8:30") {
+			this.setState({theme: normalTheme});
+		}
+		else{
+			Alert.alert("Horário Táxi Dog", "Desculpe, mas o serviço de táxi dog está disponível apenas das 9:00 às 17:00");
+			this.setState({theme: modifiedTheme});
+		}
 	}
 
 	_taxiDogCheckBox() {
@@ -206,13 +220,12 @@ export default class Schedule extends React.Component {
 				dateReturn.month = dateReturn.month + 1;
 				if (dateReturn.month < "10") dateReturn.month = "0" + dateReturn.month;
 
-				this.setState({ day: dateReturn.day + "/" + dateReturn.month + "/" + dateReturn.year});
+				this.setState({ day: dateReturn.day + "/" + dateReturn.month + "/" + dateReturn.year}, () => this._fetchAvailableHoursData());
 			}
 		}
 		catch ({code, message}) {
 			console.warn("Cannot open date picker", message);
 		}
-		this.refs.taxidog._textInput.focus();
 	}
 
 	_goToView(viewName, viewState) {
@@ -357,7 +370,7 @@ export default class Schedule extends React.Component {
 	}
 
 	_analyzeAvailableHoursResponse() {
-		if(this.state.responseStatus == "200") {
+		if(this.state.responseStatus == "202") {
 			this._treatAvailableHoursResponseContent();
 		}
 
@@ -374,7 +387,7 @@ export default class Schedule extends React.Component {
 			var listItems = new Array();
 			var index = 0;
 			for(var key in this.state.responseJson) {
-				listItems[index] = new Array(key, this.state.responseJson[key]["descricao"], this.state.responseJson[key]["valor"], this.state.responseJson[key]["duracao"]);
+				listItems[index] = new Array(index + 1, key);
 				index = index + 1;
 			}
 
