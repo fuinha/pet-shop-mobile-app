@@ -29,9 +29,11 @@ export default class ClientProfile extends React.Component {
 
 			<Container>
 					<Header style={styles.header}>
-						<Title style={styles.title}>Cliente</Title>
+						<Title style={styles.title}>Meus Dados</Title>
 					</Header>
 					<Content style={styles.content}>
+
+					<View style={{ paddingRight: 15, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4,  margin: 20, justifyContent: "center" }}>
 				
 					<Image src={this.state.imagem}></Image>
 					
@@ -93,8 +95,9 @@ export default class ClientProfile extends React.Component {
 							</InputGroup>
 						</ListItem>
 					</List>
-					<Button onPress={() => this._fetchData()}>Baixar</Button>
-					<Button onPress={() => this._getGeoPosition()}>Posição</Button>
+					</View>
+
+					<Button rounded bordered block style={styles.btVoltar} onPress={() => this._goToView("Menu", "")}>Voltar</Button>
 
 				</Content>
 				<Footer>
@@ -139,7 +142,7 @@ export default class ClientProfile extends React.Component {
 
 	_fetchData() {
 
-		fetch("http://192.168.0.101:3000/api/v1/clientProfile?email=" + this.props.authState.email + "&token=" + this.props.authState.token,
+		fetch("http://192.168.0.103:3000/api/v1/clientProfile?email=" + this.props.authState.email + "&token=" + this.props.authState.token,
 			{
 				method: 'GET',
 				headers: {
@@ -216,5 +219,8 @@ const styles = StyleSheet.create( {
 	},
 	content: {
 		backgroundColor: 'rgba(255,255,255,0.6)'	
+	},
+	btVoltar: {
+		margin: 20
 	}
 });

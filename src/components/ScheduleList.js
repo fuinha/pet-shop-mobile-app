@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View, Image } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, View, Image, DatePickerAndroid } from 'react-native';
 import { Container, Header, Title, Content, Card, CardItem, Footer, FooterTab, Button } from 'native-base';
 
 export default class ScheduleList extends React.Component {
@@ -7,16 +7,23 @@ export default class ScheduleList extends React.Component {
 	constructor() {
 		super();
 		this.state = {
-			nome: "",
-			nascimento: "",
-			raca: "",
-			porte: "",
-			imagem: ""
+			initialDay: "",
+			finalDay: "",
+			listItems: []
 		};
 	}
 
-	componentWillMount() {
-		//this._fetchData();
+	componentDidMount() {
+		date = new Date(Date.now()).getDate();
+		if(date < 10) date = "0" + date.toString();
+		month =  (new Date(Date.now()).getMonth()) + 1;
+		if(month < 10) month = "0" + month.toString();
+		year = new Date(Date.now()).getFullYear();
+		today = date + "/" + month + "/" + year;
+
+		this.setState({initialDay: today});
+		this.setState({finalDay: today}, () => this._fetchData());
+
 	}
 
 	render() {
@@ -24,44 +31,72 @@ export default class ScheduleList extends React.Component {
 
 			<Container>
 				<Header style={styles.header}>
-						<Title style={styles.title}>Agendamentos</Title>
-					</Header>
-					<Content style={styles.content}>
-					<Card dataArray={this.state.listItems}
-						renderRow={
-							(item) =>
-								<CardItem>
-									<CardItem header>
-										<Text>{item[1]}</Text>
+					<Title style={styles.title}>Agendamentos 1</Title>
+				</Header>
+				<Content style={styles.content}>
+					<View style={{borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4}}>
+						<View style={{padding: 5, flexDirection: "row", justifyContent: "space-around" }}>
+							<View style={{ margin: 2, marginLeft: 20, marginRight: 20, paddingLeft: 20, paddingRight: 20, height: 40, justifyContent: "center"}}>
+								<Text>De:</Text>
+							</View>
+							<View style={{ margin: 2, marginLeft: 20, marginRight: 20, padding: 20, height: 40, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4, justifyContent: "center"}}>
+							
+								<Text style={{fontSize: 16, color: "#484949"}} ref="initialDay" onPress={() => this._showDataPicker("initialDay")}>
+									{this.state.initialDay}
+								</Text>
+							</View>
+							<View style={{ margin: 2, marginLeft: 20, marginRight: 20, padding: 20, height: 40, justifyContent: "center"}}>
+								<Text>Até:</Text>
+							</View>
+							<View style={{ margin: 2, marginLeft: 20, marginRight: 20, padding: 20, height: 40, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4, justifyContent: "center"}}>	
+								<Text style={{fontSize: 16, color: "#484949"}} ref="finalDay" onPress={() => this._showDataPicker("finalDay")}>
+									{this.state.finalDay}
+								</Text>
+							</View>
+						</View>
+						<View style={{ paddingBottom: 5 }}>
+							<Button rounded bordered block style={styles.btAtualizar} onPress={() => this._fetchData()}>Atualizar</Button>
+						</View>
+					</View>
+						<Card dataArray={this.state.listItems}
+							renderRow={
+								(item) =>
+									<CardItem>
+										<CardItem header>
+											<Text>{item[4]} para {item[3]}</Text>
 									</CardItem>
 									<CardItem button onPress={() => this._goToView("ScheduleDetail", item[0])}>
-										<Image resizeMode="cover" source={{uri: item[5]}}>
-										</Image>	
-									</CardItem>
-									<CardItem>
-										<Text>Data de Nascimento: {item[2]}</Text>
-										<Text>Raça: {item[3]}</Text>
-										<Text>Porte: {item[4]}</Text>
+										<View style={{flexDirection: "row", justifyContent: "space-around"}}>
+											<View style={{justifyContent: "flex-start"}}>
+												<Text>Dia: {item[1]}</Text>
+												<Text>Hora: {item[2]}</Text>
+												<Text>Valor: R${item[5]}</Text>
+											</View>
+											<View style={{justifyContent: "flex-start"}}>
+												<Text>Táxi Dog: R${item[6]}</Text>
+												<Text>Pagamento: {item[7]}</Text>
+												<Text>Conclusão: {item[8]}</Text>
+											</View>
+										</View>
 									</CardItem>										
 								</CardItem>
-					}>
+							}>
+						</Card>
+						<Button rounded bordered block style={styles.btAdicionar} onPress={() => this._goToView("NewSchedule", this.props.authState)}>Adicionar</Button>
 
-					</Card>
-					<Button rounded bordered block style={styles.btAdicionar} onPress={() => this._goToView("NewSchedule", this.props.authState)}>Adicionar</Button>
-
-				</Content>
-				<Footer>
-					<FooterTab>
-						<Button onPress={() => this._goToView("ClientProfile", this.props.authState)}>Eu</Button>
+					</Content>
+					<Footer>
+						<FooterTab>
+							<Button onPress={() => this._goToView("ClientProfile", this.props.authState)}>Eu</Button>
 					
-						<Button onPress={() => this._goToView("PetProfile", this.props.authState)}>Pets</Button>
+							<Button onPress={() => this._goToView("PetProfile", this.props.authState)}>Pets</Button>
 					
-						<Button onPress={() => this._goToView("ServiceCategories", "")}>Serviços</Button>
+							<Button onPress={() => this._goToView("ServiceCategories", "")}>Serviços</Button>
 					
-						<Button onPress={() => this._goToView("Schedule", this.props.authState)}>Agenda</Button>
-					</FooterTab>
-				</Footer>     			
-      		</Container>
+							<Button onPress={() => this._goToView("Schedule", this.props.authState)}>Agenda</Button>
+						</FooterTab>
+					</Footer>     			
+      			</Container>
 		)
 	}
 
@@ -74,7 +109,7 @@ export default class ScheduleList extends React.Component {
 
 	_fetchData() {
 
-		fetch("http://192.168.0.101:3000/api/v1/petsByClient?clientEmail=" + this.props.authState.email,
+		fetch("http://192.168.0.103:3000/api/v1/schedulesByDayRange?initialDay=" + this.state.initialDay + "&finalDay=" + this.state.finalDay,
 			{
 				method: 'GET',
 				headers: {
@@ -115,11 +150,14 @@ export default class ScheduleList extends React.Component {
 			var listItems = new Array();
 			var index = 0;
 			for(var key in this.state.responseJson) {
-				listItems[index] = new Array(key, this.state.responseJson[key]["nome"],
-											this.state.responseJson[key]["nascimento"],
-											this.state.responseJson[key]["raca"],
-											this.state.responseJson[key]["porte"],
-											this.state.responseJson[key]["imagem"]);
+				listItems[index] = new Array(key, this.state.responseJson[key]["dia"],
+												this.state.responseJson[key]["hora"],
+												this.state.responseJson[key]["pet"],
+												this.state.responseJson[key]["servico"],
+												this.state.responseJson[key]["valor"],
+												this.state.responseJson[key]["taxidog"],
+												this.state.responseJson[key]["pagamento"],
+												this.state.responseJson[key]["conclusao"]);
 				index = index + 1;
 			}
 
@@ -127,6 +165,29 @@ export default class ScheduleList extends React.Component {
 		}
 		catch(error) {
 			console.log("error: " + error);
+		}
+	}
+
+	async _showDataPicker(whatDay) {
+		try {
+			const dateReturn = {action: "", year: "", month: "", day: ""};
+			dateReturn = await DatePickerAndroid.open( {
+				date: new Date()
+			});
+			if (dateReturn.action !== DatePickerAndroid.dismissedAction) {
+				console.log("Date chose");
+				if (dateReturn.day < "10") dateReturn.day = "0" + dateReturn.day;
+				dateReturn.month = dateReturn.month + 1;
+				if (dateReturn.month < "10") dateReturn.month = "0" + dateReturn.month;
+
+				if(whatDay == "initialDay")
+					this.setState({ initialDay: dateReturn.day + "/" + dateReturn.month + "/" + dateReturn.year});
+				if(whatDay == "finalDay")
+					this.setState({ finalDay: dateReturn.day + "/" + dateReturn.month + "/" + dateReturn.year});
+			}
+		}
+		catch ({code, message}) {
+			console.warn("Cannot open date picker", message);
 		}
 	}
 }
@@ -146,5 +207,9 @@ const styles = StyleSheet.create( {
 	},
 	btAdicionar: {
     	margin: 20
+  	},
+  	btAtualizar: {
+    	marginLeft: 20,
+    	marginRight: 20
   	}
 });

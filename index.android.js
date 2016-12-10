@@ -12,12 +12,13 @@ import Services from './src/components/Services.js';
 import ScheduleList from './src/components/ScheduleList.js';
 import NewSchedule from './src/components/NewSchedule.js';
 import ScheduleDetail from './src/components/ScheduleDetail.js';
+import RestartClientPass from './src/components/RestartClientPass.js';
 
 export default class oboticao extends Component {
   render() {
     return (
       
-      <Navigator initialRoute={{ name: 'NewSchedule' }}
+      <Navigator initialRoute={{ name: 'Login' }}
                  renderScene={ this.renderScene }
       />
       
@@ -25,14 +26,17 @@ export default class oboticao extends Component {
   }
 
   renderScene(route, navigator) {
-    if(route.name == 'Login') {
+    if(route.name == 'Login')
       return <Login navigator={navigator} />
-    }
+
     if(route.name == 'Signin')
       return <Signin navigator={navigator} />
 
     if(route.name == 'Signup')
       return <Signup navigator={navigator} />
+
+    if(route.name == 'RestartClientPass')
+      return <RestartClientPass navigator={navigator} authState={route.state} />
 
     if(route.name == 'Menu')
       return <Menu navigator={navigator} authState={route.state} />

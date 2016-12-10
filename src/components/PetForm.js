@@ -86,6 +86,7 @@ export default class PetForm extends React.Component {
 							</Picker>						
 						</View>
 					<Button rounded bordered block style={styles.btSalvar} onPress={() => this._pushData()}>Salvar</Button>
+					<Button rounded bordered block style={styles.btVoltar} onPress={() => this._goToView("PetProfile", "")}>Voltar</Button>
 
 				</Content>
 				<Footer>
@@ -125,19 +126,19 @@ export default class PetForm extends React.Component {
 		catch ({code, message}) {
 			console.warn("Cannot open date picker", message);
 		}
-		this.refs.telefone._textInput.focus();
 	}
 
 	_goToView(viewName, viewState) {
-		this.props.navigator.push(
-			{name: viewName,
-			 state: viewState}
-		)
+		//this.props.navigator.push(
+		//	{name: viewName,
+		//	 state: viewState}
+		//)
+		this.props.navigator.pop();
 	}
 
 	_pushData() {
 
-		fetch("http://192.168.0.101:3000/api/v1/newPet",
+		fetch("http://192.168.0.103:3000/api/v1/newPet",
 			{
 				method: 'POST',
 				headers: {
@@ -182,9 +183,6 @@ export default class PetForm extends React.Component {
 
 	}
 
-	_treatResponseContent() {
-
-	}
 }
 
 const styles = StyleSheet.create( {
@@ -209,6 +207,13 @@ const styles = StyleSheet.create( {
 
 	},
 	btSalvar: {
-    	margin: 20
+    	margin: 20,
+    	marginTop: 10,
+    	marginBottom: 5
+  	},
+  	btVoltar: {
+  		margin: 20,
+  		marginTop: 10,
+    	marginBottom: 5
   	}
 });

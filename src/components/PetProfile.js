@@ -74,7 +74,7 @@ export default class PetProfile extends React.Component {
 
 	_fetchData() {
 
-		fetch("http://192.168.0.101:3000/api/v1/petsByClient?clientEmail=" + this.props.authState.email,
+		fetch("http://192.168.0.103:3000/api/v1/petsByClient?clientEmail=" + this.props.authState.email,
 			{
 				method: 'GET',
 				headers: {

@@ -1,6 +1,6 @@
 import React from 'react';
-import { DatePickerAndroid, Image, View, Text, Alert } from 'react-native';
-import { Container, Content, List, ListItem, InputGroup, Icon, Input, Button } from 'native-base';
+import { DatePickerAndroid, StyleSheet, Image, View, Text, Alert } from 'react-native';
+import { Container, Header, Title, Content, List, ListItem, InputGroup, Icon, Input, Button } from 'native-base';
 
 export default class Signup extends React.Component {
 
@@ -25,10 +25,14 @@ export default class Signup extends React.Component {
 		return(
 
 			<Container>
+				<Header style={styles.header}>
+					<Title style={styles.title}>Cadastro</Title>
+				</Header>
 
 			<Content>
-					<Text>Cadastro</Text>
+				<View style={{ paddingRight: 15, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4,  margin: 20, marginTop: 10, marginBottom: 5, justifyContent: "center" }}>
 					<Image src={this.state.imagem}></Image>
+
 					<List>
 						<ListItem>
 							<InputGroup>
@@ -72,6 +76,7 @@ export default class Signup extends React.Component {
 								<Input
 									ref="telefone"
 									placeholder="Telefone"
+									keyboardType="phone-pad"
 									value={this.state.telefone}
 									returnKeyType={"next"}
 									onChangeText={(text) => this.setState({telefone: text})}
@@ -108,7 +113,7 @@ export default class Signup extends React.Component {
 								<Input
 									ref="cep"
 									placeholder="CEP"
-									keyboardType="email-address"
+									keyboardType="phone-pad"
 									value={this.state.cep}
 									returnKeyType={"next"}
 									onChangeText={(text) => this.setState({cep: text})}
@@ -132,7 +137,7 @@ export default class Signup extends React.Component {
 							<InputGroup>
 								<Input
 									ref="password_confirmation"
-									placeholder="Repita a Senha, por favor"
+									placeholder="Repita a senha, por favor"
 									secureTextEntry={true}
 									value={this.state.password_confirmation}
 									onChangeText={(text) => this.setState({password_confirmation: text})}
@@ -140,9 +145,11 @@ export default class Signup extends React.Component {
 							</InputGroup>
 						</ListItem>
 					</List>
-					<Button onPress={() => this._addClient()}>Ok!</Button>
-					<Button onPress={() => this._goToView('Login')}>Voltar</Button>
-					<Text>{this.state.response}</Text>
+					</View>
+
+					<Button rounded bordered block style={styles.btEntrar} onPress={() => this._addClient()}>Ok!</Button>
+					<Button rounded bordered block style={styles.btVoltar} onPress={() => this._goToView("Login", "")}>Voltar</Button>
+
 				</Content>
 			</Container>
 
@@ -235,3 +242,25 @@ export default class Signup extends React.Component {
 
 	}
 }
+
+const styles = StyleSheet.create( {
+	header: {
+		backgroundColor: "#f0f0f0"
+	},
+	title: {
+		color: "#6d6e70"
+	},
+	buttons: {
+		margin: 20
+	},
+	btEntrar: {
+    	margin: 20,
+    	marginTop: 10,
+    	marginBottom: 5
+  	},
+  	btVoltar: {
+    	margin: 20,
+    	marginTop: 10,
+    	marginBottom: 5
+  	}
+});

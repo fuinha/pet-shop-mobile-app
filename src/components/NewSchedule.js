@@ -9,7 +9,7 @@ export default class NewSchedule extends React.Component {
 	constructor() {
 		super();
 		this.state = {
-			day: "- Qual dia -?",
+			day: "- Qual dia? -",
 			selectedHour: "",
 			availableHoursByDay: [],
 			petsByClient: [],
@@ -28,7 +28,7 @@ export default class NewSchedule extends React.Component {
 	}
 
 	componentWillMount() {
-		//this._fetchPetData();
+		this._fetchPetData();
 	}
 
 	render() {
@@ -86,11 +86,11 @@ export default class NewSchedule extends React.Component {
 						</Picker>						
 					</View>
 
-					<View style={{ margin: 5, marginLeft: 20, marginRight: 20, height: 50, paddingLeft: 25, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4}}>
+					<View style={{ margin: 5, marginLeft: 20, marginRight: 20, height: 45, paddingLeft: 27, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4, justifyContent: "center"}}>
 					
-					<Text style={{fontSize: 16}} ref="dia" onPress={() => this._showDataPicker()}>
-						{this.state.day}
-					</Text>
+						<Text style={{fontSize: 16, color: "#484949"}} ref="dia" onPress={() => this._showDataPicker()}>
+							{this.state.day}
+						</Text>
 					
 					</View>
 
@@ -121,11 +121,11 @@ export default class NewSchedule extends React.Component {
 						</ListItem>
 					</List>
 
-					<View style={{ margin: 5, marginLeft: 20, marginRight: 20, paddingLeft: 25, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4}}>
+					<View style={{ margin: 5, marginLeft: 20, marginRight: 20, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4, justifyContent: "center"}}>
 					<TextInput
 						style={{fontSize: 16}}
 						ref="obs"
-						maxLength={30}
+						maxLength={50}
 						placeholder="Observações gerais"
 						onChangeText={(text) => this.setState({obs: text})}
 						value={this.state.obs}
@@ -137,7 +137,7 @@ export default class NewSchedule extends React.Component {
 							<Text style={this.state.valueStyles.textStyle}> {this.state.valueText} {this.state.taxiDogText}</Text>
 					</View>
 					
-					<Button rounded bordered block style={styles.btSalvar} onPress={() => this._pushData()}>Salvar</Button>
+					<Button rounded bordered block style={styles.btSalvar} onPress={() => this._verifyData()}>Salvar</Button>
 
 				</Content>
 				<Footer>
@@ -213,12 +213,29 @@ export default class NewSchedule extends React.Component {
 				date: new Date()
 			});
 			if (dateReturn.action !== DatePickerAndroid.dismissedAction) {
-				console.log("Date chose");
-				if (dateReturn.day < "10") dateReturn.day = "0" + dateReturn.day;
-				dateReturn.month = dateReturn.month + 1;
-				if (dateReturn.month < "10") dateReturn.month = "0" + dateReturn.month;
 
-				this.setState({ day: dateReturn.day + "/" + dateReturn.month + "/" + dateReturn.year}, () => this._fetchAvailableHoursData());
+				dateReturn.month = dateReturn.month + 1;
+
+				hoje = new Date(Date.now());
+				
+				datePicked = new Date(dateReturn.month + "/" + dateReturn.day + "/" + dateReturn.year);
+				console.log(dateReturn.day + "/" + dateReturn.month + "/" + dateReturn.year);
+
+				console.log("datePicked: " + datePicked);
+
+				console.log(" hoje value: " + hoje.getTime());
+				console.log(" datePicked value: " + datePicked.getTime());
+
+				if(hoje.getTime() > datePicked.getTime())
+					Alert.alert("Dia escolhido já passou!", "Escolha novamente, por favor.");
+				else {
+					if (dateReturn.day < "10") dateReturn.day = "0" + dateReturn.day;
+					if (dateReturn.month < "10") dateReturn.month = "0" + dateReturn.month;
+
+					this.setState({ day: dateReturn.day + "/" + dateReturn.month + "/" + dateReturn.year}, () => this._fetchAvailableHoursData());
+				}
+
+				
 			}
 		}
 		catch ({code, message}) {
@@ -444,6 +461,31 @@ export default class NewSchedule extends React.Component {
 		}
 	}
 
+	_verifyData() {
+		if(this.state.selectedPet[0] ==  null)
+			Alert.alert("Pet não selecionado!",
+						"Por favor, selecione o pet que deseja cuidar hoje.");
+
+		if(this.state.selectedService[0] == null)
+			Alert.alert("Serviço não selecionado!",
+						"Por favor, selecione o serviço para cuidar do seu amigo.");
+
+		if(this.state.day ==  "- Qual dia? -")
+			Alert.alert("Dia não escolhido!",
+						"Por favor, selecione o dia para cuidar do seu amigo.");
+
+		if(this.state.selectedHour ==  "")
+			Alert.alert("Faltou a hora!",
+						"Por favor, verifique os horários disponíveis e escolha um.");
+
+		if((this.state.selectedPet[0] !=  null) &&
+			(this.state.selectedService[0] != null) && 
+			(this.state.day !=  "- Qual dia? -") &&
+			(this.state.selectedHour !=  ""))
+			this._pushData();
+
+	}
+
 	_pushData() {
 
 		fetch("http://192.168.0.103:3000/api/v1/newSchedule",
@@ -483,7 +525,7 @@ export default class NewSchedule extends React.Component {
 		if(this.state.responseStatus == "201") {
 			Alert.alert("Legal!",
 						"Seu horário foi salvo. Lembre-se de efetuar o pagamento para que ele seja efetivado!",
-						[{text: "Ok", onPress: () => this._goToView('PetProfile', this.props.authState) }]);
+						[{text: "Ok", onPress: () => this._goToView('ScheduleList', this.props.authState) }]);
 		}
 
 		else {
