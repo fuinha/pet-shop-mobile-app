@@ -18,6 +18,10 @@ export default class PetForm extends React.Component {
 
 	}
 
+	componentWillUnmount() {
+		this.props.onUnmount();
+	}
+
 	render() {
 
 		return(
@@ -83,7 +87,7 @@ export default class PetForm extends React.Component {
 								<Picker.Item label="Grande" value="Grande" />
 								<Picker.Item label="Gigante" value="Gigante" />
 
-							</Picker>						
+							</Picker>
 						</View>
 					<Button rounded bordered block style={styles.btSalvar} onPress={() => this._pushData()}>Salvar</Button>
 					<Button rounded bordered block style={styles.btVoltar} onPress={() => this._goToView("PetProfile", "")}>Voltar</Button>

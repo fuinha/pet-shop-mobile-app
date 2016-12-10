@@ -68,7 +68,8 @@ export default class PetProfile extends React.Component {
 	_goToView(viewName, viewState) {
 		this.props.navigator.push(
 			{name: viewName,
-			 state: viewState}
+			 state: viewState,
+			 onUnmount: () => this._fetchData()}
 		)
 	}
 

@@ -18,7 +18,7 @@ export default class oboticao extends Component {
   render() {
     return (
       
-      <Navigator initialRoute={{ name: 'Login' }}
+      <Navigator initialRoute={{ name: 'ServiceCategories' }}
                  renderScene={ this.renderScene }
       />
       
@@ -48,7 +48,7 @@ export default class oboticao extends Component {
       return <PetProfile navigator={navigator} authState={route.state} />
 
     if(route.name == 'PetForm')
-      return <PetForm navigator={navigator} authState={route.state} />
+      return <PetForm navigator={navigator} authState={route.state} onUnmount={route.onUnmount} />
 
     if(route.name == 'ServiceCategories')
       return <ServiceCategories navigator={navigator} />

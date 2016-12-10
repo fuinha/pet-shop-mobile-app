@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, StyleSheet, Text, View, Image } from 'react-native';
-import { Container, Header, Content, Card, CardItem, Footer, FooterTab, Button } from 'native-base';
+import { Container, Header, Title, Content, Card, CardItem, Footer, FooterTab, Button } from 'native-base';
 
 export default class ServiceCategories extends React.Component {
 
@@ -18,8 +18,8 @@ export default class ServiceCategories extends React.Component {
 	render() {
 		return(
 			<Container>
-				<Header>
-					<Text>O Boticão - Categorias de Serviço v1</Text>
+				<Header style={styles.header}>
+					<Title style={styles.title}>Categorias</Title>
 				</Header>
 				<Content>
 
@@ -30,7 +30,7 @@ export default class ServiceCategories extends React.Component {
 									<CardItem header>
 										<Text>{item[1]}</Text>
 									</CardItem>
-									<CardItem button onPress={() => this._goToView("Services", item[0])}>
+									<CardItem button onPress={() => this._goToView("Services",null,item[0])}>
 										<Image resizeMode="cover" source={{uri: item[2]}}>
 										</Image>	
 									</CardItem>										
@@ -38,8 +38,6 @@ export default class ServiceCategories extends React.Component {
 					}>
 
 					</Card>
-
-					<Button onPress={() => this._fetchData()}>Baixar lista</Button>
 
 				</Content>
 				<Footer>
@@ -68,7 +66,7 @@ export default class ServiceCategories extends React.Component {
 
 	_fetchData() {
 
-		fetch("http://192.168.0.101:3000/api/v1/serviceCategories",
+		fetch("http://192.168.0.103:3000/api/v1/serviceCategories",
 			{
 				method: 'GET',
 				headers: {
@@ -121,3 +119,12 @@ export default class ServiceCategories extends React.Component {
 		}
 	}
 }
+
+const styles = StyleSheet.create( {
+	header: {
+		backgroundColor: "#f0f0f0"
+	},
+	title: {
+		color: "#6d6e70"
+	}
+});

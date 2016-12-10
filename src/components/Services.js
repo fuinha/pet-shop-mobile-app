@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
-import { Container, Header, Content, Card, CardItem, Footer, FooterTab, Button, Icon } from 'native-base';
+import { Container, Header, Title, Content, Card, CardItem, Footer, FooterTab, Button, Icon } from 'native-base';
 
 export default class Services extends React.Component {
 
@@ -18,9 +18,8 @@ export default class Services extends React.Component {
 	render() {
 		return(
 			<Container>
-				<Header>
-					<Button onPress={() => this._returnView()}>Voltar</Button>
-					<Text>O Boticão - Serviços</Text>
+				<Header style={styles.header}>
+					<Title style={styles.title}>Serviços</Title>
 				</Header>
 				<Content>
 
@@ -40,7 +39,7 @@ export default class Services extends React.Component {
 
 					</Card>
 
-					<Button onPress={() => this._fetchData()}>Baixar lista</Button>
+					<Button rounded bordered block style={styles.btVoltar} onPress={() => this._returnView()}>Voltar</Button>
 
 				</Content>
 				<Footer>
@@ -58,12 +57,6 @@ export default class Services extends React.Component {
 		)
 	}
 
-	_goToView(viewName, viewState) {
-		this.props.navigator.push(
-			{name: viewName,
-			 state: viewState}
-		)
-	}
 
 	_returnView() {
 		this.props.navigator.pop();
@@ -71,7 +64,7 @@ export default class Services extends React.Component {
 
 	_fetchData() {
 
-		fetch("http://192.168.0.101:3000/api/v1/servicesByCategory?categoryId=" + this.props.categoryId,
+		fetch("http://192.168.0.103:3000/api/v1/servicesByCategory?categoryId=" + this.props.categoryId,
 			{
 				method: 'GET',
 				headers: {
@@ -124,3 +117,17 @@ export default class Services extends React.Component {
 		}
 	}
 }
+
+const styles = StyleSheet.create( {
+	header: {
+		backgroundColor: "#f0f0f0"
+	},
+	title: {
+		color: "#6d6e70"
+	},
+  	btVoltar: {
+    	margin: 20,
+    	marginTop: 10,
+    	marginBottom: 5
+  	}
+});
