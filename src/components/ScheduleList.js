@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, ScrollView, StyleSheet, Text, View, Image, DatePickerAndroid } from 'react-native';
-import { Container, Header, Title, Content, Card, CardItem, Footer, FooterTab, Button } from 'native-base';
+import { Container, Header, Title, Content, Card, CardItem, Footer, FooterTab, Button, Icon } from 'native-base';
 
 export default class ScheduleList extends React.Component {
 
@@ -13,7 +13,12 @@ export default class ScheduleList extends React.Component {
 		};
 	}
 
+	componentWillMount() {
+		console.log("ScheduleList - componentWillMount");
+	}
+
 	componentDidMount() {
+		console.log("ScheduleList - componentWillMount");
 		date = new Date(Date.now()).getDate();
 		if(date < 10) date = "0" + date.toString();
 		month =  (new Date(Date.now()).getMonth()) + 1;
@@ -24,15 +29,26 @@ export default class ScheduleList extends React.Component {
 		this.setState({initialDay: today});
 		this.setState({finalDay: today}, () => this._fetchData());
 
+		console.log("ScheduleList - componentWillMount - after _fetchData");
+
 	}
 
 	render() {
 		return(
 
 			<Container>
-				<Header style={styles.header}>
-					<Title style={styles.title}>Agendamentos 1</Title>
-				</Header>
+					<Header style={styles.header}>
+						<View style={{flex: 1, flexDirection: "row"}}>
+							<View style={{width: 30}}>
+								<Button transparent onPress={() => this._returnView()}>
+									<Icon name="angle-left" style={styles.headerIcon} />
+								</Button>
+							</View>
+							<View style={{flex: 1, flexDirection: "row", justifyContent: "center", paddingRight: 30}}>
+								<Title style={styles.title}>Agendamentos</Title>
+							</View>
+						</View>
+					</Header>
 				<Content style={styles.content}>
 					<View style={{borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4}}>
 						<View style={{padding: 5, flexDirection: "row", justifyContent: "space-around" }}>
@@ -87,13 +103,22 @@ export default class ScheduleList extends React.Component {
 					</Content>
 					<Footer>
 						<FooterTab>
-							<Button onPress={() => this._goToView("ClientProfile", this.props.authState)}>Eu</Button>
-					
-							<Button onPress={() => this._goToView("PetProfile", this.props.authState)}>Pets</Button>
-					
-							<Button onPress={() => this._goToView("ServiceCategories", "")}>Serviços</Button>
-					
-							<Button onPress={() => this._goToView("Schedule", this.props.authState)}>Agenda</Button>
+							<Button bordered onPress={() => this._goToView("ClientProfile", this.props.authState)}>
+								Eu
+								<Icon name="user" />
+							</Button>
+							<Button bordered onPress={() => this._goToView("PetProfile", this.props.authState)}>
+								Pets
+								<Icon name="paw" />
+							</Button>
+							<Button bordered onPress={() => this._goToView("ServiceCategories")}>
+								Serviços
+								<Icon name="list" />
+							</Button>
+							<Button bordered onPress={() => this._goToView("Schedule", this.props.authState)}>
+								Agenda
+								<Icon name="calendar" />
+							</Button>
 						</FooterTab>
 					</Footer>     			
       			</Container>
@@ -197,10 +222,13 @@ const styles = StyleSheet.create( {
 		flex: 1
 	},
 	header: {
-		backgroundColor: "#f0f0f0"
+		backgroundColor: "#f0f0f0",
+		paddingLeft: 15,
+		paddingRight: 15
 	},
 	title: {
-		color: "#6d6e70"
+		color: "#6d6e70",
+		justifyContent: "center"
 	},
 	content: {
 		backgroundColor: 'rgba(255,255,255,0.6)'	

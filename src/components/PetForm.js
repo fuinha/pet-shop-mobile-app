@@ -1,8 +1,7 @@
 import React from 'react';
 import { Alert, DatePickerAndroid, ScrollView, Picker, StyleSheet, Text, TextInput, View, Image } from 'react-native';
-import { Container, Header, Title, Content, List, ListItem, InputGroup, Input, Footer, FooterTab, Button } from 'native-base';
+import { Container, Header, Title, Content, List, ListItem, InputGroup, Input, Footer, FooterTab, Button, Icon } from 'native-base';
 import Cloudinary from 'cloudinary-core';
-import ModalPicker from 'react-native-modal-picker';
 
 export default class PetForm extends React.Component {
 
@@ -27,8 +26,17 @@ export default class PetForm extends React.Component {
 		return(
 
 			<Container>
-				<Header style={styles.header}>
-						<Title style={styles.title}>Novo Pet</Title>
+					<Header style={styles.header}>
+						<View style={{flex: 1, flexDirection: "row"}}>
+							<View style={{width: 30}}>
+								<Button transparent>
+									<Icon name="angle-left" style={styles.headerIcon} />
+								</Button>
+							</View>
+							<View style={{flex: 1, flexDirection: "row", justifyContent: "center", paddingRight: 30}}>
+								<Title style={styles.title}>Novo Pet</Title>
+							</View>
+						</View>
 					</Header>
 					<Content style={styles.content}>
 					<Image src={this.state.imagem}></Image>
@@ -95,13 +103,22 @@ export default class PetForm extends React.Component {
 				</Content>
 				<Footer>
 					<FooterTab>
-						<Button onPress={() => this._goToView("ClientProfile", this.props.authState)}>Eu</Button>
-					
-						<Button onPress={() => this._goToView("PetProfile", this.props.authState)}>Pets</Button>
-					
-						<Button onPress={() => this._goToView("ServiceCategories", "")}>Serviços</Button>
-					
-						<Button onPress={() => this._goToView("Schedule", this.props.authState)}>Agenda</Button>
+						<Button bordered onPress={() => this._goToView("ClientProfile", this.props.authState)}>
+							Eu
+							<Icon name="user" />
+						</Button>
+						<Button bordered onPress={() => this._goToView("PetProfile", this.props.authState)}>
+							Pets
+							<Icon name="paw" />
+						</Button>
+						<Button bordered onPress={() => this._goToView("ServiceCategories")}>
+							Serviços
+							<Icon name="list" />
+						</Button>
+						<Button bordered onPress={() => this._goToView("Schedule", this.props.authState)}>
+							Agenda
+							<Icon name="calendar" />
+						</Button>
 					</FooterTab>
 				</Footer>     			
       		</Container>

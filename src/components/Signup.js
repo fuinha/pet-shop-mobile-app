@@ -25,9 +25,18 @@ export default class Signup extends React.Component {
 		return(
 
 			<Container>
-				<Header style={styles.header}>
-					<Title style={styles.title}>Cadastro</Title>
-				</Header>
+					<Header style={styles.header}>
+						<View style={{flex: 1, flexDirection: "row"}}>
+							<View style={{width: 30}}>
+								<Button transparent onPress={() => this._returnView()}>
+									<Icon name="angle-left" style={styles.headerIcon} />
+								</Button>
+							</View>
+							<View style={{flex: 1, flexDirection: "row", justifyContent: "center", paddingRight: 30}}>
+								<Title style={styles.title}>Cadastro</Title>
+							</View>
+						</View>
+					</Header>
 
 			<Content>
 				<View style={{ paddingRight: 15, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4,  margin: 20, marginTop: 10, marginBottom: 5, justifyContent: "center" }}>
@@ -148,7 +157,6 @@ export default class Signup extends React.Component {
 					</View>
 
 					<Button rounded bordered block style={styles.btEntrar} onPress={() => this._addClient()}>Ok!</Button>
-					<Button rounded bordered block style={styles.btVoltar} onPress={() => this._goToView("Login", "")}>Voltar</Button>
 
 				</Content>
 			</Container>
@@ -161,6 +169,11 @@ export default class Signup extends React.Component {
 			{name: viewName,
 			 state: viewState}
 		)
+	}
+
+	_returnView() {
+
+		this.props.navigator.pop();
 	}
 
 	async _showDataPicker() {
@@ -245,20 +258,18 @@ export default class Signup extends React.Component {
 
 const styles = StyleSheet.create( {
 	header: {
-		backgroundColor: "#f0f0f0"
+		backgroundColor: "#f0f0f0",
+		paddingLeft: 15,
+		paddingRight: 15
 	},
 	title: {
-		color: "#6d6e70"
+		color: "#6d6e70",
+		justifyContent: "center"
 	},
 	buttons: {
 		margin: 20
 	},
 	btEntrar: {
-    	margin: 20,
-    	marginTop: 10,
-    	marginBottom: 5
-  	},
-  	btVoltar: {
     	margin: 20,
     	marginTop: 10,
     	marginBottom: 5

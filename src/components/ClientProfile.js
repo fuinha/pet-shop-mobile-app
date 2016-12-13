@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, AsyncStorage, ScrollView, StyleSheet, Text, View, Image } from 'react-native';
-import { Container, Header, Title, Content, List, ListItem, InputGroup, Input, Footer, FooterTab, Button } from 'native-base';
+import { Container, Header, Title, Content, List, ListItem, InputGroup, Input, Footer, FooterTab, Button, Icon } from 'native-base';
 
 export default class ClientProfile extends React.Component {
 
@@ -29,7 +29,16 @@ export default class ClientProfile extends React.Component {
 
 			<Container>
 					<Header style={styles.header}>
-						<Title style={styles.title}>Meus Dados</Title>
+						<View style={{flex: 1, flexDirection: "row"}}>
+							<View style={{width: 30}}>
+								<Button transparent onPress={() => this._returnView()}>
+									<Icon name="angle-left" style={styles.headerIcon} />
+								</Button>
+							</View>
+							<View style={{flex: 1, flexDirection: "row", justifyContent: "center", paddingRight: 30}}>
+								<Title style={styles.title}>Meus Dados</Title>
+							</View>
+						</View>
 					</Header>
 					<Content style={styles.content}>
 
@@ -97,18 +106,25 @@ export default class ClientProfile extends React.Component {
 					</List>
 					</View>
 
-					<Button rounded bordered block style={styles.btVoltar} onPress={() => this._goToView("Menu", "")}>Voltar</Button>
-
 				</Content>
 				<Footer>
 					<FooterTab>
-						<Button onPress={() => this._goToView("ClientProfile", this.props.authState)}>Eu</Button>
-					
-						<Button onPress={() => this._goToView("PetProfile", this.props.authState)}>Pets</Button>
-					
-						<Button onPress={() => this._goToView("ServiceCategories", "")}>Serviços</Button>
-					
-						<Button onPress={() => this._goToView("Schedule", this.props.authState)}>Agenda</Button>
+							<Button bordered onPress={() => this._goToView("ClientProfile", this.props.authState)}>
+								Eu
+								<Icon name="user" />
+							</Button>
+							<Button bordered onPress={() => this._goToView("PetProfile", this.props.authState)}>
+								Pets
+								<Icon name="paw" />
+							</Button>
+							<Button bordered onPress={() => this._goToView("ServiceCategories")}>
+								Serviços
+								<Icon name="list" />
+							</Button>
+							<Button bordered onPress={() => this._goToView("Schedule", this.props.authState)}>
+								Agenda
+								<Icon name="calendar" />
+							</Button>
 					</FooterTab>
 				</Footer>
 						
@@ -121,6 +137,10 @@ export default class ClientProfile extends React.Component {
 			{name: viewName,
 			 state: viewState}
 		)
+	}
+
+	_returnView() {
+		this.props.navigator.pop();
 	}
 
 	/*async _verifyToken() {
@@ -212,10 +232,13 @@ const styles = StyleSheet.create( {
 		flex: 1
 	},
 	header: {
-		backgroundColor: "#f0f0f0"
+		backgroundColor: "#f0f0f0",
+		paddingLeft: 15,
+		paddingRight: 15
 	},
 	title: {
-		color: "#6d6e70"
+		color: "#6d6e70",
+		justifyContent: "center"
 	},
 	content: {
 		backgroundColor: 'rgba(255,255,255,0.6)'	

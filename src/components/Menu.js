@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
-import { Container, Header, Title, Content, Footer, FooterTab, Button } from 'native-base';
+import { Container, Header, Title, Content, Footer, FooterTab, Button, Icon } from 'native-base';
 
 export default class Menu extends React.Component {
 
@@ -17,13 +17,22 @@ export default class Menu extends React.Component {
 					</Content>
 					<Footer>
 						<FooterTab>
-							<Button onPress={() => this._goToView("ClientProfile", this.props.authState)}>Eu</Button>
-					
-							<Button onPress={() => this._goToView("PetProfile", this.props.authState)}>Pets</Button>
-					
-							<Button onPress={() => this._goToView("ServiceCategories", "")}>Serviços</Button>
-					
-							<Button onPress={() => this._goToView("ScheduleList", this.props.authState)}>Agenda</Button>
+							<Button bordered onPress={() => this._goToView("ClientProfile", this.props.authState)}>
+								Eu
+								<Icon name="user" />
+							</Button>
+							<Button bordered onPress={() => this._goToView("PetProfile", this.props.authState)}>
+								Pets
+								<Icon name="paw" />
+							</Button>
+							<Button bordered onPress={() => this._goToView("ServiceCategories")}>
+								Serviços
+								<Icon name="list" />
+							</Button>
+							<Button bordered onPress={() => this._goToView("Schedule", this.props.authState)}>
+								Agenda
+								<Icon name="calendar" />
+							</Button>
 						</FooterTab>
 					</Footer> 
 				</Image>    			
@@ -44,7 +53,8 @@ const styles = StyleSheet.create( {
 		flex: 1
 	},
 	header: {
-		backgroundColor: "#f0f0f0"
+		backgroundColor: "#f0f0f0",
+		justifyContent: "center"
 	},
 	title: {
 		color: "#6d6e70"

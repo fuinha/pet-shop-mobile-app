@@ -1,6 +1,5 @@
 import React from 'react';
 import { AsyncStorage, StyleSheet, View, Text, Alert } from 'react-native';
-import axios from 'axios';
 import { Container, Header, Title, Content, List, ListItem, InputGroup, Icon, Input, Button } from 'native-base';
 
 export default class Signin extends React.Component {
@@ -13,9 +12,18 @@ export default class Signin extends React.Component {
 	render() {
 		return(
 			<Container>
-				<Header style={styles.header}>
-					<Title style={styles.title}>Login</Title>
-				</Header>
+					<Header style={styles.header}>
+						<View style={{flex: 1, flexDirection: "row"}}>
+							<View style={{width: 30}}>
+								<Button transparent onPress={() => this._returnView()}>
+									<Icon name="angle-left" style={styles.headerIcon} />
+								</Button>
+							</View>
+							<View style={{flex: 1, flexDirection: "row", justifyContent: "center", paddingRight: 30}}>
+								<Title style={styles.title}>Login</Title>
+							</View>
+						</View>
+					</Header>
 				<Content>
 					<View style={{ paddingRight: 15, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4,  margin: 20, marginTop: 40, justifyContent: "center" }}>
 					<List>
@@ -46,7 +54,6 @@ export default class Signin extends React.Component {
 					</List>
 					</View>
 					<Button rounded bordered block style={styles.btEntrar} onPress={() => this._login()}>Entrar</Button>
-					<Button rounded bordered block style={styles.btVoltar} onPress={() => this._goToView("Login", "")}>Voltar</Button>
 					<Button rounded bordered block style={styles.btEsqueci} onPress={() => this._goToView("RestartClientPass", "")}>Esqueci a senha</Button>
 					<Text>{this.state.response}</Text>
 				</Content>
@@ -59,6 +66,11 @@ export default class Signin extends React.Component {
 			{name: viewName,
 			 state: viewState}
 		)
+	}
+
+	_returnView() {
+
+		this.props.navigator.pop();
 	}
 
 	_login() {
@@ -171,21 +183,19 @@ export default class Signin extends React.Component {
 
 const styles = StyleSheet.create( {
 	header: {
-		backgroundColor: "#f0f0f0"
+		backgroundColor: "#f0f0f0",
+		paddingLeft: 15,
+		paddingRight: 15
 	},
 	title: {
-		color: "#6d6e70"
+		color: "#6d6e70",
+		justifyContent: "center"
 	},
 	buttons: {
 		margin: 20
 	},
 	btEntrar: {
     	margin: 20,
-    	marginBottom: 5
-  	},
-  	btVoltar: {
-    	margin: 20,
-    	marginTop: 10,
     	marginBottom: 5
   	},
   	btEsqueci: {

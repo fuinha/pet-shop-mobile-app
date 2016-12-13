@@ -18,9 +18,18 @@ export default class Services extends React.Component {
 	render() {
 		return(
 			<Container>
-				<Header style={styles.header}>
-					<Title style={styles.title}>Serviços</Title>
-				</Header>
+					<Header style={styles.header}>
+						<View style={{flex: 1, flexDirection: "row"}}>
+							<View style={{width: 30}}>
+								<Button transparent onPress={() => this._returnView()}>
+									<Icon name="angle-left" style={styles.headerIcon} />
+								</Button>
+							</View>
+							<View style={{flex: 1, flexDirection: "row", justifyContent: "center", paddingRight: 30}}>
+								<Title style={styles.title}>Serviços</Title>
+							</View>
+						</View>
+					</Header>
 				<Content>
 
 					<Card dataArray={this.state.listItems}
@@ -44,13 +53,22 @@ export default class Services extends React.Component {
 				</Content>
 				<Footer>
 					<FooterTab>
-						<Button onPress={() => this._goToView("ClientProfile", this.props.authState)}>Eu</Button>
-					
-						<Button onPress={() => this._goToView("PetProfile", this.props.authState)}>Pets</Button>
-					
-						<Button onPress={() => this._goToView("ServiceCategories", "")}>Serviços</Button>
-					
-						<Button onPress={() => this._goToView("Schedule", this.props.authState)}>Agenda</Button>
+						<Button bordered onPress={() => this._goToView("ClientProfile", this.props.authState)}>
+							Eu
+							<Icon name="user" />
+						</Button>
+						<Button bordered onPress={() => this._goToView("PetProfile", this.props.authState)}>
+							Pets
+							<Icon name="paw" />
+						</Button>
+						<Button bordered onPress={() => this._goToView("ServiceCategories")}>
+							Serviços
+							<Icon name="list" />
+						</Button>
+						<Button bordered onPress={() => this._goToView("Schedule", this.props.authState)}>
+							Agenda
+							<Icon name="calendar" />
+						</Button>
 					</FooterTab>
 				</Footer>     			
       		</Container>
@@ -120,10 +138,13 @@ export default class Services extends React.Component {
 
 const styles = StyleSheet.create( {
 	header: {
-		backgroundColor: "#f0f0f0"
+		backgroundColor: "#f0f0f0",
+		paddingLeft: 15,
+		paddingRight: 15
 	},
 	title: {
-		color: "#6d6e70"
+		color: "#6d6e70",
+		justifyContent: "center"
 	},
   	btVoltar: {
     	margin: 20,

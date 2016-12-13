@@ -19,9 +19,18 @@ export default class RestartClientPass extends React.Component {
 		return(
 
 			<Container>
-				<Header style={styles.header}>
-					<Title style={styles.title}>Alterar Senha</Title>
-				</Header>
+					<Header style={styles.header}>
+						<View style={{flex: 1, flexDirection: "row"}}>
+							<View style={{width: 30}}>
+								<Button transparent onPress={() => this._returnView()}>
+									<Icon name="angle-left" style={styles.headerIcon} />
+								</Button>
+							</View>
+							<View style={{flex: 1, flexDirection: "row", justifyContent: "center", paddingRight: 30}}>
+								<Title style={styles.title}>Alterar Senha</Title>
+							</View>
+						</View>
+					</Header>
 
 				<Content>
 
@@ -71,7 +80,6 @@ export default class RestartClientPass extends React.Component {
 					</View>
 
 					<Button rounded bordered block style={styles.btEntrar} onPress={() => this._restartClientPass()}>Ok!</Button>
-					<Button rounded bordered block style={styles.btVoltar} onPress={() => this._goToView("Login", "")}>Voltar</Button>
 					
 					<Text>{this.state.response}</Text>
 				</Content>
@@ -85,6 +93,11 @@ export default class RestartClientPass extends React.Component {
 			{name: viewName,
 			 state: viewState}
 		)
+	}
+
+	_returnView() {
+
+		this.props.navigator.pop();
 	}
 
 	_restartClientPass() {
@@ -154,8 +167,14 @@ export default class RestartClientPass extends React.Component {
 }
 
 const styles = StyleSheet.create( {
-	titulo: {
-		textAlign: "center"
+	header: {
+		backgroundColor: "#f0f0f0",
+		paddingLeft: 15,
+		paddingRight: 15
+	},
+	title: {
+		color: "#6d6e70",
+		justifyContent: "center"
 	},
 	buttons: {
 		margin: 20
@@ -163,15 +182,5 @@ const styles = StyleSheet.create( {
 	btEntrar: {
     	margin: 20,
     	marginBottom: 5
-  	},
-  	btVoltar: {
-    	margin: 20,
-    	marginTop: 10
-  	},
-	header: {
-		backgroundColor: "#f0f0f0"
-	},
-	title: {
-		color: "#6d6e70"
-	}
+  	}
 });
