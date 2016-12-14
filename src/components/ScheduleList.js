@@ -13,12 +13,7 @@ export default class ScheduleList extends React.Component {
 		};
 	}
 
-	componentWillMount() {
-		console.log("ScheduleList - componentWillMount");
-	}
-
 	componentDidMount() {
-		console.log("ScheduleList - componentWillMount");
 		date = new Date(Date.now()).getDate();
 		if(date < 10) date = "0" + date.toString();
 		month =  (new Date(Date.now()).getMonth()) + 1;
@@ -27,9 +22,8 @@ export default class ScheduleList extends React.Component {
 		today = date + "/" + month + "/" + year;
 
 		this.setState({initialDay: today});
-		this.setState({finalDay: today}, () => this._fetchData());
-
-		console.log("ScheduleList - componentWillMount - after _fetchData");
+		this.setState({finalDay: today});
+		//this.setState({finalDay: today}, () => this._fetchData());
 
 	}
 
@@ -40,7 +34,7 @@ export default class ScheduleList extends React.Component {
 					<Header style={styles.header}>
 						<View style={{flex: 1, flexDirection: "row"}}>
 							<View style={{width: 30}}>
-								<Button transparent onPress={() => this._returnView()}>
+								<Button transparent onPress={() => this._returnToMenu()}>
 									<Icon name="angle-left" style={styles.headerIcon} />
 								</Button>
 							</View>
@@ -52,20 +46,19 @@ export default class ScheduleList extends React.Component {
 				<Content style={styles.content}>
 					<View style={{borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4}}>
 						<View style={{padding: 5, flexDirection: "row", justifyContent: "space-around" }}>
-							<View style={{ margin: 2, marginLeft: 20, marginRight: 20, paddingLeft: 20, paddingRight: 20, height: 40, justifyContent: "center"}}>
+							<View style={{ margin: 2, marginLeft: 20, marginRight: 20, height: 40, justifyContent: "center"}}>
 								<Text>De:</Text>
 							</View>
-							<View style={{ margin: 2, marginLeft: 20, marginRight: 20, padding: 20, height: 40, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4, justifyContent: "center"}}>
-							
-								<Text style={{fontSize: 16, color: "#484949"}} ref="initialDay" onPress={() => this._showDataPicker("initialDay")}>
+							<View style={{ margin: 2, marginLeft: 20, marginRight: 20, height: 40, paddingLeft: 5, paddingRight: 5, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4, justifyContent: "center"}}>						
+								<Text style={{color: "#484949"}} ref="initialDay" onPress={() => this._showDataPicker("initialDay")}>
 									{this.state.initialDay}
 								</Text>
 							</View>
-							<View style={{ margin: 2, marginLeft: 20, marginRight: 20, padding: 20, height: 40, justifyContent: "center"}}>
+							<View style={{ margin: 2, marginLeft: 20, marginRight: 20, height: 40, justifyContent: "center"}}>
 								<Text>Até:</Text>
 							</View>
-							<View style={{ margin: 2, marginLeft: 20, marginRight: 20, padding: 20, height: 40, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4, justifyContent: "center"}}>	
-								<Text style={{fontSize: 16, color: "#484949"}} ref="finalDay" onPress={() => this._showDataPicker("finalDay")}>
+							<View style={{ margin: 2, marginLeft: 20, marginRight: 20, height: 40, paddingLeft: 5, paddingRight: 5, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4, justifyContent: "center"}}>	
+								<Text style={{color: "#484949"}} ref="finalDay" onPress={() => this._showDataPicker("finalDay")}>
 									{this.state.finalDay}
 								</Text>
 							</View>
@@ -111,11 +104,11 @@ export default class ScheduleList extends React.Component {
 								Pets
 								<Icon name="paw" />
 							</Button>
-							<Button bordered onPress={() => this._goToView("ServiceCategories")}>
+							<Button bordered onPress={() => this._goToView("ServiceCategories", this.props.authState)}>
 								Serviços
 								<Icon name="list" />
 							</Button>
-							<Button bordered onPress={() => this._goToView("Schedule", this.props.authState)}>
+							<Button bordered onPress={() => this._goToView("ScheduleList", this.props.authState)}>
 								Agenda
 								<Icon name="calendar" />
 							</Button>
@@ -130,6 +123,10 @@ export default class ScheduleList extends React.Component {
 			{name: viewName,
 			 state: viewState}
 		)
+	}
+
+	_returnToMenu(viewState) {
+		this.props.navigator.jumpTo("Menu")
 	}
 
 	_fetchData() {

@@ -61,11 +61,21 @@ export default class Signin extends React.Component {
 		)
 	}
 
+	_resetTo(viewName, viewState) {
+		console.log(this.props.navigator.getCurrentRoutes());
+		this.props.navigator.resetTo(
+			{name: viewName,
+			 state: viewState}
+		);
+		console.log(this.props.navigator.getCurrentRoutes());
+	}
+
 	_goToView(viewName, viewState) {
 		this.props.navigator.push(
 			{name: viewName,
 			 state: viewState}
-		)
+		);
+
 	}
 
 	_returnView() {
@@ -139,7 +149,7 @@ export default class Signin extends React.Component {
 			console.log("error: " + error);
 		}
 
-		this._goToView("Menu", this.state);
+		this._resetTo("Menu", this.state);
 	}
 
 	async _persistData() {

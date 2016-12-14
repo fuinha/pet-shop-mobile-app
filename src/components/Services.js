@@ -48,8 +48,6 @@ export default class Services extends React.Component {
 
 					</Card>
 
-					<Button rounded bordered block style={styles.btVoltar} onPress={() => this._returnView()}>Voltar</Button>
-
 				</Content>
 				<Footer>
 					<FooterTab>
@@ -61,11 +59,11 @@ export default class Services extends React.Component {
 							Pets
 							<Icon name="paw" />
 						</Button>
-						<Button bordered onPress={() => this._goToView("ServiceCategories")}>
+						<Button bordered onPress={() => this._goToView("ServiceCategories", this.props.authState)}>
 							Serviços
 							<Icon name="list" />
 						</Button>
-						<Button bordered onPress={() => this._goToView("Schedule", this.props.authState)}>
+						<Button bordered onPress={() => this._goToView("ScheduleList", this.props.authState)}>
 							Agenda
 							<Icon name="calendar" />
 						</Button>

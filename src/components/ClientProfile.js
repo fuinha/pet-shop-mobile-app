@@ -24,6 +24,10 @@ export default class ClientProfile extends React.Component {
 		this._fetchData();
 	}
 
+	componentDidMount() {
+		console.log(this.props.navigator.getCurrentRoutes());
+	}
+
 	render() {
 		return(
 
@@ -31,7 +35,7 @@ export default class ClientProfile extends React.Component {
 					<Header style={styles.header}>
 						<View style={{flex: 1, flexDirection: "row"}}>
 							<View style={{width: 30}}>
-								<Button transparent onPress={() => this._returnView()}>
+								<Button transparent onPress={() => this._returnToMenu(this.props.authState)}>
 									<Icon name="angle-left" style={styles.headerIcon} />
 								</Button>
 							</View>
@@ -117,11 +121,11 @@ export default class ClientProfile extends React.Component {
 								Pets
 								<Icon name="paw" />
 							</Button>
-							<Button bordered onPress={() => this._goToView("ServiceCategories")}>
+							<Button bordered onPress={() => this._goToView("ServiceCategories", this.props.authState)}>
 								Serviços
 								<Icon name="list" />
 							</Button>
-							<Button bordered onPress={() => this._goToView("Schedule", this.props.authState)}>
+							<Button bordered onPress={() => this._goToView("ScheduleList", this.props.authState)}>
 								Agenda
 								<Icon name="calendar" />
 							</Button>
@@ -139,8 +143,8 @@ export default class ClientProfile extends React.Component {
 		)
 	}
 
-	_returnView() {
-		this.props.navigator.pop();
+	_returnToMenu(viewState) {
+		this.props.navigator.jumpTo("Menu");
 	}
 
 	/*async _verifyToken() {
