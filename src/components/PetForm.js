@@ -1,6 +1,7 @@
 import React from 'react';
 import { Alert, DatePickerAndroid, ScrollView, Picker, StyleSheet, Text, TextInput, View, Image } from 'react-native';
 import { Container, Header, Title, Content, List, ListItem, InputGroup, Input, Footer, FooterTab, Button, Icon } from 'native-base';
+import AppActivityIndicator from './AppActivityIndicator.js';
 import Cloudinary from 'cloudinary-core';
 
 export default class PetForm extends React.Component {
@@ -12,7 +13,8 @@ export default class PetForm extends React.Component {
 			nascimento: "",
 			raca: "",
 			porte: "",
-			imagem: ""
+			imagem: "",
+			animating: false
 		};
 
 	}
@@ -29,7 +31,7 @@ export default class PetForm extends React.Component {
 					<Header style={styles.header}>
 						<View style={{flex: 1, flexDirection: "row"}}>
 							<View style={{width: 30}}>
-								<Button transparent>
+								<Button transparent onPress={() => this._returnView()}>
 									<Icon name="angle-left" style={styles.headerIcon} />
 								</Button>
 							</View>
@@ -97,8 +99,8 @@ export default class PetForm extends React.Component {
 
 							</Picker>
 						</View>
+					<AppActivityIndicator animating = {this.state.animating} />
 					<Button rounded bordered block style={styles.btSalvar} onPress={() => this._pushData()}>Salvar</Button>
-					<Button rounded bordered block style={styles.btVoltar} onPress={() => this._goToView("PetProfile", "")}>Voltar</Button>
 
 				</Content>
 				<Footer>
@@ -150,14 +152,19 @@ export default class PetForm extends React.Component {
 	}
 
 	_goToView(viewName, viewState) {
-		//this.props.navigator.push(
-		//	{name: viewName,
-		//	 state: viewState}
-		//)
+		this.props.navigator.push(
+			{name: viewName,
+			 state: viewState}
+		);
+	}
+
+	_returnView() {
 		this.props.navigator.pop();
 	}
 
 	_pushData() {
+
+		this.setState({animating: true});
 
 		fetch("http://192.168.0.103:3000/api/v1/newPet",
 			{
@@ -191,7 +198,7 @@ export default class PetForm extends React.Component {
 
 	_analyzeResponse() {
 		if(this.state.responseStatus == "201") {
-			console.log("analyzeResponse");
+			this.setState({animating: false});
 			Alert.alert("Sucesso!",
 						"Seu amigo foi adicionado!",
 						[{text: "Ok", onPress: () => this._goToView('PetProfile', this.props.authState) }]);

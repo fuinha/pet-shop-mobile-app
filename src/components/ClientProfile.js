@@ -1,11 +1,14 @@
 import React from 'react';
-import { Alert, AsyncStorage, ScrollView, StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Container, Header, Title, Content, List, ListItem, InputGroup, Input, Footer, FooterTab, Button, Icon } from 'native-base';
+import AppActivityIndicator from './AppActivityIndicator.js';
 
 export default class ClientProfile extends React.Component {
 
-		constructor() {
+	constructor() {
+		console.log("constructor");
 		super();
+		console.log("after super()");
 		this.state = {
 			nome: "",
 			nascimento: "",
@@ -16,16 +19,20 @@ export default class ClientProfile extends React.Component {
 			cep: "",
 			imagem: "",
 			token: "",
-			currentPosition: ""
+			currentPosition: "",
+			animating: false
 		};
+		console.log("after defining initial state");
 	}
 
 	componentWillMount() {
-		this._fetchData();
+		console.log("will mount");
 	}
 
 	componentDidMount() {
-		console.log(this.props.navigator.getCurrentRoutes());
+		console.log("did mount");
+		this.setState({animating: true});
+		this._fetchData();
 	}
 
 	render() {
@@ -48,7 +55,7 @@ export default class ClientProfile extends React.Component {
 
 					<View style={{ paddingRight: 15, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4,  margin: 20, justifyContent: "center" }}>
 				
-					<Image src={this.state.imagem}></Image>
+						<AppActivityIndicator animating = {this.state.animating} />
 					
 					<List>
 						<ListItem>
@@ -211,7 +218,7 @@ export default class ClientProfile extends React.Component {
 			this.setState({endereco:   this.state.responseJson["endereco"]});
 			this.setState({cidade:     this.state.responseJson["cidade"]});
 			this.setState({cep:        this.state.responseJson["cep"]});
-			this.setState({imagem:     this.state.responseJson["imagem"]});
+			this.setState({imagem:     this.state.responseJson["imagem"]}, () => this.setState({animating: false}));
 		}
 		catch(error) {
 			console.log("error: " + error);

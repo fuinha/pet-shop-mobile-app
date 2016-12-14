@@ -1,6 +1,7 @@
 import React from 'react';
 import { Alert, ScrollView, StyleSheet, Text, View, Image, DatePickerAndroid } from 'react-native';
 import { Container, Header, Title, Content, Card, CardItem, Footer, FooterTab, Button, Icon } from 'native-base';
+import AppActivityIndicator from './AppActivityIndicator.js';
 
 export default class ScheduleList extends React.Component {
 
@@ -9,7 +10,8 @@ export default class ScheduleList extends React.Component {
 		this.state = {
 			initialDay: "",
 			finalDay: "",
-			listItems: []
+			listItems: [],
+			animating: false
 		};
 	}
 
@@ -22,8 +24,7 @@ export default class ScheduleList extends React.Component {
 		today = date + "/" + month + "/" + year;
 
 		this.setState({initialDay: today});
-		this.setState({finalDay: today});
-		//this.setState({finalDay: today}, () => this._fetchData());
+		this.setState({finalDay: today}, () => this._fetchData());
 
 	}
 
@@ -67,11 +68,19 @@ export default class ScheduleList extends React.Component {
 							<Button rounded bordered block style={styles.btAtualizar} onPress={() => this._fetchData()}>Atualizar</Button>
 						</View>
 					</View>
+
+					{ 
+						this.state.animating ?
+						<View style={{margin: 20}}><AppActivityIndicator animating = {this.state.animating} /></View>
+						:null
+								
+					}
+
 						<Card dataArray={this.state.listItems}
 							renderRow={
 								(item) =>
 									<CardItem>
-										<CardItem header>
+										<CardItem header style={{backgroundColor: "#f0f0f0"}}>
 											<Text>{item[4]} para {item[3]}</Text>
 									</CardItem>
 									<CardItem button onPress={() => this._goToView("ScheduleDetail", item[0])}>
@@ -131,6 +140,8 @@ export default class ScheduleList extends React.Component {
 
 	_fetchData() {
 
+		this.setState({animating: true});
+
 		fetch("http://192.168.0.103:3000/api/v1/schedulesByDayRange?initialDay=" + this.state.initialDay + "&finalDay=" + this.state.finalDay,
 			{
 				method: 'GET',
@@ -182,6 +193,8 @@ export default class ScheduleList extends React.Component {
 												this.state.responseJson[key]["conclusao"]);
 				index = index + 1;
 			}
+
+			this.setState({animating: false});
 
 			this.setState({listItems:  listItems});
 		}

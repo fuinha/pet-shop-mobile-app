@@ -1,6 +1,7 @@
 import React from 'react';
 import { DatePickerAndroid, StyleSheet, Image, View, Text, Alert } from 'react-native';
 import { Container, Header, Title, Content, List, ListItem, InputGroup, Icon, Input, Button } from 'native-base';
+import AppActivityIndicator from './AppActivityIndicator.js';
 
 export default class Signup extends React.Component {
 
@@ -17,7 +18,8 @@ export default class Signup extends React.Component {
 			imagem: "",
 			token: "",
 			password: "",
-			password_confirmation: ""
+			password_confirmation: "",
+			animating: false
 		};
 	}
 
@@ -156,6 +158,8 @@ export default class Signup extends React.Component {
 					</List>
 					</View>
 
+					<AppActivityIndicator animating = {this.state.animating} />
+
 					<Button rounded bordered block style={styles.btEntrar} onPress={() => this._addClient()}>Ok!</Button>
 
 				</Content>
@@ -198,6 +202,9 @@ export default class Signup extends React.Component {
 	}
 
 	_addClient() {
+
+		this.setState({animating: true});
+
 		fetch('http://192.168.0.101:3000/api/v1/newClient/', {
 			method: 'POST',
 			headers: {
@@ -237,6 +244,7 @@ export default class Signup extends React.Component {
 		catch(error) {
 			console.log("error: " + error);
 		}
+		this.setState({animating: false});
 		Alert.alert("Obrigado " + this.state.nome + "!",
 					"Agora que sabemos quem você é, precisamos saber quem são seus amigos. " +
 					"Depois de adicioná-los, é só agendar um dos serviços oferecidos através do menu!",

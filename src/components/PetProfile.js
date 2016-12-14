@@ -1,17 +1,20 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View, Image } from 'react-native';
 import { Container, Header, Title, Content, Card, CardItem, Footer, FooterTab, Button, Icon } from 'native-base';
+import AppActivityIndicator from './AppActivityIndicator.js';
 
 export default class PetProfile extends React.Component {
 
 	constructor() {
 		super();
 		this.state = {
+			listItems: [],
 			nome: "",
 			nascimento: "",
 			raca: "",
 			porte: "",
-			imagem: ""
+			imagem: "",
+			animating: false
 		};
 	}
 
@@ -36,11 +39,20 @@ export default class PetProfile extends React.Component {
 						</View>
 					</Header>
 					<Content style={styles.content}>
+
+						{ 
+							this.state.animating ?
+								<View style={{margin: 20}}><AppActivityIndicator animating = {this.state.animating} /></View>
+								:null
+								
+						}
+
+
 					<Card dataArray={this.state.listItems}
 						renderRow={
 							(item) =>
 								<CardItem>
-									<CardItem header>
+									<CardItem header style={{backgroundColor: "#f0f0f0"}}>
 										<Text>{item[1]}</Text>
 									</CardItem>
 									<CardItem button onPress={() => this._goToView("Services", item[0])}>
@@ -101,6 +113,8 @@ export default class PetProfile extends React.Component {
 
 	_fetchData() {
 
+		this.setState({animating: true});
+
 		fetch("http://192.168.0.103:3000/api/v1/petsByClient?clientEmail=" + this.props.authState.email,
 			{
 				method: 'GET',
@@ -149,6 +163,8 @@ export default class PetProfile extends React.Component {
 											this.state.responseJson[key]["imagem"]);
 				index = index + 1;
 			}
+
+			this.setState({animating: false});
 
 			this.setState({listItems:  listItems});
 		}

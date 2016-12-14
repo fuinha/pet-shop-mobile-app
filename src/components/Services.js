@@ -26,7 +26,7 @@ export default class Services extends React.Component {
 								</Button>
 							</View>
 							<View style={{flex: 1, flexDirection: "row", justifyContent: "center", paddingRight: 30}}>
-								<Title style={styles.title}>Serviços</Title>
+								<Title style={styles.title}>Lista de Serviços</Title>
 							</View>
 						</View>
 					</Header>
@@ -36,7 +36,7 @@ export default class Services extends React.Component {
 						renderRow={
 							(item) =>
 								<CardItem>
-									<CardItem header>
+									<CardItem header style={{backgroundColor: "#f0f0f0"}}>
 										<Text>{item[1]}</Text>
 									</CardItem>
 									<CardItem>

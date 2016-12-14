@@ -1,12 +1,13 @@
 import React from 'react';
 import { AsyncStorage, StyleSheet, View, Text, Alert } from 'react-native';
 import { Container, Header, Title, Content, List, ListItem, InputGroup, Icon, Input, Button } from 'native-base';
+import AppActivityIndicator from './AppActivityIndicator.js';
 
 export default class Signin extends React.Component {
 
 	constructor() {
 		super();
-		this.state = {email: "", password: "", token: "", responseStatus: "", responseJson: ""};
+		this.state = {email: "", password: "", token: "", responseStatus: "", responseJson: "", animating: false};
 	}
 
 	render() {
@@ -53,21 +54,13 @@ export default class Signin extends React.Component {
 						</ListItem>
 					</List>
 					</View>
+					<AppActivityIndicator animating = {this.state.animating} />
 					<Button rounded bordered block style={styles.btEntrar} onPress={() => this._login()}>Entrar</Button>
 					<Button rounded bordered block style={styles.btEsqueci} onPress={() => this._goToView("RestartClientPass", "")}>Esqueci a senha</Button>
 					<Text>{this.state.response}</Text>
 				</Content>
 			</Container>
 		)
-	}
-
-	_resetTo(viewName, viewState) {
-		console.log(this.props.navigator.getCurrentRoutes());
-		this.props.navigator.resetTo(
-			{name: viewName,
-			 state: viewState}
-		);
-		console.log(this.props.navigator.getCurrentRoutes());
 	}
 
 	_goToView(viewName, viewState) {
@@ -84,6 +77,8 @@ export default class Signin extends React.Component {
 	}
 
 	_login() {
+
+		this.setState({animating: true});
 		
 		fetch('http://192.168.0.103:3000/api/v1/loginClient/', {
 			method: 'POST',
@@ -149,7 +144,9 @@ export default class Signin extends React.Component {
 			console.log("error: " + error);
 		}
 
-		this._resetTo("Menu", this.state);
+		this.setState({animating: false});
+
+		this._goToView("Menu", this.state);
 	}
 
 	async _persistData() {

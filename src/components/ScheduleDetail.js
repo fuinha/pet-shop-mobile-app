@@ -1,6 +1,7 @@
 import React from 'react';
 import { Alert, AsyncStorage, ScrollView, StyleSheet, Text, View, Image } from 'react-native';
 import { Container, Header, Title, Content, List, ListItem, InputGroup, Input, Footer, FooterTab, Button, Icon } from 'native-base';
+import AppActivityIndicator from './AppActivityIndicator.js';
 
 export default class ScheduleDetail extends React.Component {
 
@@ -16,7 +17,8 @@ export default class ScheduleDetail extends React.Component {
 			cep: "",
 			imagem: "",
 			token: "",
-			currentPosition: ""
+			currentPosition: "",
+			animating: true
 		};
 	}
 
@@ -102,6 +104,7 @@ export default class ScheduleDetail extends React.Component {
 							</InputGroup>
 						</ListItem>
 					</List>
+					<AppActivityIndicator animating = {this.state.animating} />
 					<Button onPress={() => this._fetchData()}>Baixar</Button>
 					<Button onPress={() => this._getGeoPosition()}>Posição</Button>
 
@@ -136,6 +139,10 @@ export default class ScheduleDetail extends React.Component {
 			{name: viewName,
 			 state: viewState}
 		)
+	}
+
+	_returnView() {
+		this.props.navigator.pop();
 	}
 
 	/*async _verifyToken() {
