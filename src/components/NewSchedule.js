@@ -1,6 +1,7 @@
 import React from 'react';
 import { Alert, StyleSheet, Picker, Text, TextInput, View, Image, DatePickerAndroid } from 'react-native';
 import { Container, Header, Title, Content, List, ListItem, Input, InputGroup, CheckBox, Footer, FooterTab, Button, Icon } from 'native-base';
+import AppActivityIndicator from './AppActivityIndicator.js';
 import  modifiedTheme from '../themes/modifiedTheme.js';
 import  normalTheme from '../themes/normalTheme.js';
 
@@ -23,7 +24,8 @@ export default class NewSchedule extends React.Component {
 			value: {v: 0},
 			valueText: "",
 			valueStyles: {lineStyle: {marginTop: 5, marginBottom: 5}, textStyle: {color: "#fff"}},
-			theme: normalTheme
+			theme: normalTheme,
+			animating: false
 		};
 	}
 
@@ -45,12 +47,14 @@ export default class NewSchedule extends React.Component {
 							<View style={{flex: 1, flexDirection: "row", justifyContent: "center", paddingRight: 30}}>
 								<Title style={styles.title}>Novo Agendamento</Title>
 							</View>
+							<View style={{justifyContent: "center"}}>
+								<AppActivityIndicator animating = {this.state.animating} />
+							</View>
 						</View>
 					</Header>
 				<Content style={styles.content}>
 
 					<View style={{ margin: 5, marginTop: 10, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4, marginLeft: 20, marginRight: 20 }}>
-
 						<Picker
 							style={{marginLeft: 20, marginRight: 20}}
 							selectedValue={this.state.selectedPet[0]}
@@ -270,6 +274,8 @@ export default class NewSchedule extends React.Component {
 
 	_fetchPetData() {
 
+		this.setState({animating: true});
+
 		fetch("http://192.168.0.103:3000/api/v1/petsByClient?clientEmail=" + this.props.authState.email,
 			{
 				method: 'GET',
@@ -316,6 +322,8 @@ export default class NewSchedule extends React.Component {
 
 			listItems.unshift([0, "- Para qual pet? -"]);
 
+			this.setState({animating: false});
+
 			this.setState({petsByClient:  listItems});
 		}
 		catch(error) {
@@ -324,6 +332,8 @@ export default class NewSchedule extends React.Component {
 	}
 
 	_fetchServiceData() {
+
+		this.setState({animating: true});
 
 		fetch("http://192.168.0.103:3000/api/v1/servicesByEspecies?especiesId=" + this.state.selectedPet[1],
 			{
@@ -371,6 +381,8 @@ export default class NewSchedule extends React.Component {
 
 			listItems.unshift([0, "- Qual serviço? -"]);
 
+			this.setState({animating: false});
+
 			this.setState({servicesByEspecies:  listItems});
 		}
 		catch(error) {
@@ -379,6 +391,8 @@ export default class NewSchedule extends React.Component {
 	}
 
 	_fetchAvailableHoursData() {
+
+		this.setState({animating: true});
 
 		fetch("http://192.168.0.103:3000/api/v1/availableHoursByDay?day=" + this.state.day,
 			{
@@ -426,6 +440,8 @@ export default class NewSchedule extends React.Component {
 
 			listItems.unshift([0, "- Qual horário? -"]);
 
+			this.setState({animating: false});
+
 			this.setState({availableHoursByDay:  listItems});
 		}
 		catch(error) {
@@ -434,6 +450,8 @@ export default class NewSchedule extends React.Component {
 	}
 
 	_fetchTaxiDogData() {
+
+		this.setState({animating: true});
 
 		fetch("http://192.168.0.103:3000/api/v1/taxiDogByClient?clientEmail=" + this.props.authState.email,
 			{
@@ -471,6 +489,8 @@ export default class NewSchedule extends React.Component {
 
 	_treatTaxiDogResponseContent() {
 		try {
+
+			this.setState({animating: false});
 			
 			this.setState({taxiDogValue:  parseFloat(this.state.responseJson["taxi_dog_value"])}, () => this._taxiDogCheckBox());
 		}
@@ -505,6 +525,8 @@ export default class NewSchedule extends React.Component {
 	}
 
 	_pushData() {
+
+		this.setState({animating: true});
 
 		fetch("http://192.168.0.103:3000/api/v1/newSchedule",
 			{
@@ -541,6 +563,7 @@ export default class NewSchedule extends React.Component {
 
 	_analyzeResponse() {
 		if(this.state.responseStatus == "201") {
+			this.setState({animating: false});
 			Alert.alert("Legal!",
 						"Seu horário foi salvo. Lembre-se de efetuar o pagamento para que ele seja efetivado!",
 						[{text: "Ok", onPress: () => this._goToView('ScheduleList', this.props.authState) }]);

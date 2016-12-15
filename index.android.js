@@ -14,8 +14,6 @@ import NewSchedule from './src/components/NewSchedule.js';
 import ScheduleDetail from './src/components/ScheduleDetail.js';
 import RestartClientPass from './src/components/RestartClientPass.js';
 
-import Teste from './src/components/Teste.js';
-
 export default class oboticao extends Component {
   render() {
     return (
@@ -66,9 +64,6 @@ export default class oboticao extends Component {
 
     if(route.name == 'ScheduleDetail')
       return <ScheduleDetail navigator={navigator} authState={route.state} />
-
-    if(route.name == 'Teste')
-      return <Teste navigator={navigator} authState={route.state} />
 
   }
 

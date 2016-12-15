@@ -72,10 +72,11 @@ export default class ScheduleList extends React.Component {
 					{ 
 						this.state.animating ?
 						<View style={{margin: 20}}><AppActivityIndicator animating = {this.state.animating} /></View>
-						:null
-								
+						:null			
 					}
 
+					{
+						this.state.listItems.length ?
 						<Card dataArray={this.state.listItems}
 							renderRow={
 								(item) =>
@@ -83,7 +84,7 @@ export default class ScheduleList extends React.Component {
 										<CardItem header style={{backgroundColor: "#f0f0f0"}}>
 											<Text>{item[4]} para {item[3]}</Text>
 									</CardItem>
-									<CardItem button onPress={() => this._goToView("ScheduleDetail", item[0])}>
+									<CardItem button>
 										<View style={{flexDirection: "row", justifyContent: "space-around"}}>
 											<View style={{justifyContent: "flex-start"}}>
 												<Text>Dia: {item[1]}</Text>
@@ -98,9 +99,16 @@ export default class ScheduleList extends React.Component {
 										</View>
 									</CardItem>										
 								</CardItem>
-							}>
+						}>
 						</Card>
+						:<View style={{flexDirection: "row", justifyContent: "center"}}><Text>Não há serviços agendados para estes dias</Text></View>
+
+					}
+
+
+						
 						<Button rounded bordered block style={styles.btAdicionar} onPress={() => this._goToView("NewSchedule", this.props.authState)}>Adicionar</Button>
+						<Button rounded bordered block style={styles.btPagar}>Pagar</Button>
 
 					</Content>
 					<Footer>
