@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Container, Header, Title, Content, List, ListItem, InputGroup, Input, Footer, FooterTab, Button, Icon } from 'native-base';
+import { GLOBAL } from './GLOBAL.js';
 import AppActivityIndicator from './AppActivityIndicator.js';
 
 export default class ClientProfile extends React.Component {
@@ -173,7 +174,7 @@ export default class ClientProfile extends React.Component {
 
 	_fetchData() {
 
-		fetch("http://192.168.0.103:3000/api/v1/clientProfile?email=" + this.props.authState.email + "&token=" + this.props.authState.token,
+		fetch(GLOBAL.BASE_URL + "/api/v1/clientProfile?email=" + this.props.authState.email + "&token=" + this.props.authState.token,
 			{
 				method: 'GET',
 				headers: {

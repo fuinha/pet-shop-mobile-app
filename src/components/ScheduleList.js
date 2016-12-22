@@ -1,6 +1,7 @@
 import React from 'react';
 import { Alert, ScrollView, StyleSheet, Text, View, Image, DatePickerAndroid } from 'react-native';
 import { Container, Header, Title, Content, Card, CardItem, Footer, FooterTab, Button, Icon } from 'native-base';
+import { GLOBAL } from './GLOBAL.js';
 import AppActivityIndicator from './AppActivityIndicator.js';
 
 export default class ScheduleList extends React.Component {
@@ -11,6 +12,7 @@ export default class ScheduleList extends React.Component {
 			initialDay: "",
 			finalDay: "",
 			listItems: [],
+			cardHeaderStyle: {},
 			animating: false
 		};
 	}
@@ -65,7 +67,7 @@ export default class ScheduleList extends React.Component {
 							</View>
 						</View>
 						<View style={{ paddingBottom: 5 }}>
-							<Button rounded bordered block style={styles.btAtualizar} onPress={() => this._fetchData()}>Atualizar</Button>
+							<Button rounded bordered block style={styles.btAtualizar} onPress={() => this._verifyData()}>Atualizar</Button>
 						</View>
 					</View>
 
@@ -77,38 +79,41 @@ export default class ScheduleList extends React.Component {
 
 					{
 						this.state.listItems.length ?
-						<Card dataArray={this.state.listItems}
-							renderRow={
-								(item) =>
-									<CardItem>
-										<CardItem header style={{backgroundColor: "#f0f0f0"}}>
-											<Text>{item[4]} para {item[3]}</Text>
+							<Card dataArray={this.state.listItems}
+								renderRow={
+									(item) =>
+										<CardItem>
+											<CardItem header style={item[9]}>
+												<Text>{item[4]} para {item[3]}</Text>
+										</CardItem>
+										<CardItem button>
+											<View style={{flexDirection: "row", justifyContent: "space-around"}}>
+												<View style={{justifyContent: "flex-start"}}>
+													<Text>Dia: {item[1]}</Text>
+													<Text>Hora: {item[2]}</Text>
+													<Text>Valor: R${item[5]}</Text>
+												</View>
+												<View style={{justifyContent: "flex-start"}}>
+													<Text>Táxi Dog: R${item[6]}</Text>
+													<Text>Pagamento: {item[7]}</Text>
+													<Text>Conclusão: {item[8]}</Text>
+												</View>
+											</View>
+										</CardItem>										
 									</CardItem>
-									<CardItem button>
-										<View style={{flexDirection: "row", justifyContent: "space-around"}}>
-											<View style={{justifyContent: "flex-start"}}>
-												<Text>Dia: {item[1]}</Text>
-												<Text>Hora: {item[2]}</Text>
-												<Text>Valor: R${item[5]}</Text>
-											</View>
-											<View style={{justifyContent: "flex-start"}}>
-												<Text>Táxi Dog: R${item[6]}</Text>
-												<Text>Pagamento: {item[7]}</Text>
-												<Text>Conclusão: {item[8]}</Text>
-											</View>
-										</View>
-									</CardItem>										
-								</CardItem>
-						}>
-						</Card>
-						:<View style={{flexDirection: "row", justifyContent: "center"}}><Text>Não há serviços agendados para estes dias</Text></View>
+							}>
+							</Card>
+						: 	<View style={{margin: 30, flexDirection: "row", justifyContent: "center"}}><Text>Não há serviços agendados para estes dias</Text></View>
 
 					}
-
-
-						
-						<Button rounded bordered block style={styles.btAdicionar} onPress={() => this._goToView("NewSchedule", this.props.authState)}>Adicionar</Button>
-						<Button rounded bordered block style={styles.btPagar}>Pagar</Button>
+					
+					<Button rounded bordered block style={styles.btAdicionar} onPress={() => this._goToView("NewSchedule", this.props.authState)}>Adicionar</Button>
+					
+					{
+						this.state.listItems.length?
+							<Button rounded bordered block style={styles.btPagar}>Pagar</Button>
+						: 	<Button disabled rounded bordered block style={styles.btPagar}>Pagar</Button> 	
+					}
 
 					</Content>
 					<Footer>
@@ -146,11 +151,19 @@ export default class ScheduleList extends React.Component {
 		this.props.navigator.jumpTo("Menu")
 	}
 
+	_verifyData() {
+		if(this.state.finalDay < this.state.initialDay)
+			Alert.alert("Datas incorretas!",
+						"A data final é menor que a data inicial, corrija por favor.");
+		else
+			this._fetchData();
+	}
+
 	_fetchData() {
 
 		this.setState({animating: true});
 
-		fetch("http://192.168.0.103:3000/api/v1/schedulesByDayRange?initialDay=" + this.state.initialDay + "&finalDay=" + this.state.finalDay,
+		fetch(GLOBAL.BASE_URL + "/api/v1/schedulesByDayRange?initialDay=" + this.state.initialDay + "&finalDay=" + this.state.finalDay,
 			{
 				method: 'GET',
 				headers: {
@@ -199,6 +212,24 @@ export default class ScheduleList extends React.Component {
 												this.state.responseJson[key]["taxidog"],
 												this.state.responseJson[key]["pagamento"],
 												this.state.responseJson[key]["conclusao"]);
+
+				if(this.state.responseJson[key].hasOwnProperty("conclusao") &&
+				   this.state.responseJson[key].hasOwnProperty("pagamento")) {
+				  	listItems[index][9] = {backgroundColor: "#d9edd7"}
+				}
+				if(!this.state.responseJson[key].hasOwnProperty("conclusao") &&
+				   this.state.responseJson[key].hasOwnProperty("pagamento")) {
+					listItems[index][9] = {backgroundColor: "#fcfade"}
+				}
+				if(this.state.responseJson[key].hasOwnProperty("conclusao") &&
+				   !this.state.responseJson[key].hasOwnProperty("pagamento")) {
+					listItems[index][9] = {backgroundColor: "#eee3f2"}
+				}
+				if(!this.state.responseJson[key].hasOwnProperty("conclusao") &&
+				   !this.state.responseJson[key].hasOwnProperty("pagamento")) {
+					listItems[index][9] = {backgroundColor: "#edd8d7"}
+				}
+
 				index = index + 1;
 			}
 
@@ -256,6 +287,10 @@ const styles = StyleSheet.create( {
   	},
   	btAtualizar: {
     	marginLeft: 20,
+    	marginRight: 20
+  	},
+  	btPagar: {
+  		marginLeft: 20,
     	marginRight: 20
   	}
 });

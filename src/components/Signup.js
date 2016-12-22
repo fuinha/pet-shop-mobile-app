@@ -1,6 +1,7 @@
 import React from 'react';
 import { DatePickerAndroid, StyleSheet, Image, View, Text, Alert } from 'react-native';
 import { Container, Header, Title, Content, List, ListItem, InputGroup, Icon, Input, Button } from 'native-base';
+import { GLOBAL } from './GLOBAL.js';
 import AppActivityIndicator from './AppActivityIndicator.js';
 
 export default class Signup extends React.Component {
@@ -205,7 +206,7 @@ export default class Signup extends React.Component {
 
 		this.setState({animating: true});
 
-		fetch('http://192.168.0.101:3000/api/v1/newClient/', {
+		fetch(GLOBAL.BASE_URL + '/api/v1/newClient/', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',

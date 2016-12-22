@@ -1,6 +1,7 @@
 import React from 'react';
 import { Alert, AsyncStorage, ScrollView, StyleSheet, Text, View, Image } from 'react-native';
 import { Container, Header, Title, Content, List, ListItem, InputGroup, Input, Footer, FooterTab, Button, Icon } from 'native-base';
+import { GLOBAL } from './GLOBAL.js';
 import AppActivityIndicator from './AppActivityIndicator.js';
 
 export default class ScheduleDetail extends React.Component {
@@ -164,7 +165,7 @@ export default class ScheduleDetail extends React.Component {
 
 	_fetchData() {
 
-		fetch("http://192.168.0.101:3000/api/v1/clientProfile?email=" + this.props.authState.email + "&token=" + this.props.authState.token,
+		fetch(GLOBAL.BASE_URL + "/api/v1/clientProfile?email=" + this.props.authState.email + "&token=" + this.props.authState.token,
 			{
 				method: 'GET',
 				headers: {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View, Image } from 'react-native';
 import { Container, Header, Title, Content, Card, CardItem, Footer, FooterTab, Button, Icon } from 'native-base';
+import { GLOBAL } from './GLOBAL.js';
 import AppActivityIndicator from './AppActivityIndicator.js';
 
 export default class PetProfile extends React.Component {
@@ -115,7 +116,7 @@ export default class PetProfile extends React.Component {
 
 		this.setState({animating: true});
 
-		fetch("http://192.168.0.103:3000/api/v1/petsByClient?clientEmail=" + this.props.authState.email,
+		fetch(GLOBAL.BASE_URL + "/api/v1/petsByClient?clientEmail=" + this.props.authState.email,
 			{
 				method: 'GET',
 				headers: {

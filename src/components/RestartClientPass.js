@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, Alert } from 'react-native';
 import { Header, Title, Container, Content, List, ListItem, InputGroup, Icon, Input, Button } from 'native-base';
+import { GLOBAL } from './GLOBAL.js';
 
 export default class RestartClientPass extends React.Component {
 
@@ -101,7 +102,7 @@ export default class RestartClientPass extends React.Component {
 	}
 
 	_restartClientPass() {
-		fetch('http://192.168.0.103:3000/api/v1/restartClientPass', {
+		fetch(GLOBAL.BASE_URL + '/api/v1/restartClientPass', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Alert, DatePickerAndroid, ScrollView, Picker, StyleSheet, Text, TextInput, View, Image } from 'react-native';
 import { Container, Header, Title, Content, List, ListItem, InputGroup, Input, Footer, FooterTab, Button, Icon } from 'native-base';
+import { GLOBAL } from './GLOBAL.js';
 import AppActivityIndicator from './AppActivityIndicator.js';
 import Cloudinary from 'cloudinary-core';
 
@@ -14,9 +15,15 @@ export default class PetForm extends React.Component {
 			raca: "",
 			porte: "",
 			imagem: "",
+			selectedEspecie: [],
+			especies: [],
 			animating: false
 		};
 
+	}
+
+	componentWillMount() {
+		this._fetchEspecieData();
 	}
 
 	componentWillUnmount() {
@@ -68,7 +75,23 @@ export default class PetForm extends React.Component {
 						</ListItem>
 
 						
-					</List>								
+					</List>
+					<View style={{ margin: 10, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4, marginLeft: 20, marginRight: 20 }}>
+						<Picker
+							style={{marginLeft: 20, marginRight: 20}}
+							selectedValue={this.state.selectedEspecie[0]}
+							onValueChange={(especieValue, especiePosition) => {
+
+								var especie = new Array(especieValue, this.state.especies[especiePosition][1]);
+
+								this.setState({selectedEspecie: especie});							
+
+							}}>
+
+							{this.state.especies.map((especie) => {return <Picker.Item key={especie[0]} label={especie[1]} value={especie[0]} />})}
+
+						</Picker>
+					</View>							
 						<View style={{ margin: 10, borderWidth: 1, borderColor: "#c0c1c4", borderRadius: 4, marginLeft: 20, marginRight: 20 }}>
 							<Picker
 								style={{marginLeft: 20, marginRight: 20}}
@@ -162,11 +185,72 @@ export default class PetForm extends React.Component {
 		this.props.navigator.pop();
 	}
 
+	_fetchEspecieData() {
+
+		console.log("_fetchEspecieData");
+
+		this.setState({animating: true});
+
+		fetch(GLOBAL.BASE_URL + "/api/v1/especies",
+			{
+				method: 'GET',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+			}})
+			.then(
+				(response) => {
+					this.setState({responseStatus: response["status"]});
+					return response.json();
+				}
+			)
+			.then(
+				(responseJson) => {
+					this.setState({responseJson: responseJson});
+					this._analyzeEspecieResponse();
+				}
+			)
+			.catch((error) => console.error(error));
+	}
+
+	_analyzeEspecieResponse() {
+		if(this.state.responseStatus == "200") {
+			this._treatEspecieResponseContent();
+		}
+
+		else {
+			Alert.alert("Ops! :(",
+						"Algo inesperado ocorreu no servidor. Tente novamente em alguns minutos, por favor!");
+		}
+
+	}
+
+	_treatEspecieResponseContent() {
+		try {
+			console.log("treatResponseContent");
+			var listItems = new Array();
+			var index = 0;
+			for(var key in this.state.responseJson) {
+				listItems[index] = new Array(key, this.state.responseJson[key]["descricao"]);
+				index = index + 1;
+			}
+
+			listItems.unshift([0, "- Espécie -"]);
+
+			this.setState({animating: false});
+
+			this.setState({especies:  listItems});
+		}
+		catch(error) {
+			console.log("error: " + error);
+		}
+	}
+
 	_pushData() {
 
 		this.setState({animating: true});
 
-		fetch("http://192.168.0.103:3000/api/v1/newPet",
+		fetch(GLOBAL.BASE_URL + "/api/v1/newPet",
 			{
 				method: 'POST',
 				headers: {
@@ -176,6 +260,7 @@ export default class PetForm extends React.Component {
 				body: JSON.stringify({
 					nome: this.state.nome,
 					nascimento: this.state.nascimento,
+					especie_id: this.state.selectedEspecie[0],
 					raca: this.state.raca,
 					porte: this.state.porte,
 					clienteEmail: this.props.authState.email

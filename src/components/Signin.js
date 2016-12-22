@@ -1,6 +1,7 @@
 import React from 'react';
 import { AsyncStorage, StyleSheet, View, Text, Alert } from 'react-native';
 import { Container, Header, Title, Content, List, ListItem, InputGroup, Icon, Input, Button } from 'native-base';
+import { GLOBAL } from './GLOBAL.js';
 import AppActivityIndicator from './AppActivityIndicator.js';
 
 export default class Signin extends React.Component {
@@ -80,7 +81,7 @@ export default class Signin extends React.Component {
 
 		this.setState({animating: true});
 		
-		fetch('http://192.168.0.103:3000/api/v1/loginClient/', {
+		fetch(GLOBAL.BASE_URL + '/api/v1/loginClient/', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',

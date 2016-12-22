@@ -1,6 +1,7 @@
 import React from 'react';
 import { Alert, StyleSheet, Picker, Text, TextInput, View, Image, DatePickerAndroid } from 'react-native';
 import { Container, Header, Title, Content, List, ListItem, Input, InputGroup, CheckBox, Footer, FooterTab, Button, Icon } from 'native-base';
+import { GLOBAL } from './GLOBAL.js';
 import AppActivityIndicator from './AppActivityIndicator.js';
 import  modifiedTheme from '../themes/modifiedTheme.js';
 import  normalTheme from '../themes/normalTheme.js';
@@ -276,7 +277,7 @@ export default class NewSchedule extends React.Component {
 
 		this.setState({animating: true});
 
-		fetch("http://192.168.0.103:3000/api/v1/petsByClient?clientEmail=" + this.props.authState.email,
+		fetch(GLOBAL.BASE_URL + "/api/v1/petsByClient?clientEmail=" + this.props.authState.email,
 			{
 				method: 'GET',
 				headers: {
@@ -335,7 +336,7 @@ export default class NewSchedule extends React.Component {
 
 		this.setState({animating: true});
 
-		fetch("http://192.168.0.103:3000/api/v1/servicesByEspecies?especiesId=" + this.state.selectedPet[1],
+		fetch(GLOBAL.BASE_URL + "/api/v1/servicesByEspecies?especiesId=" + this.state.selectedPet[1],
 			{
 				method: 'GET',
 				headers: {
@@ -394,7 +395,7 @@ export default class NewSchedule extends React.Component {
 
 		this.setState({animating: true});
 
-		fetch("http://192.168.0.103:3000/api/v1/availableHoursByDay?day=" + this.state.day,
+		fetch(GLOBAL.BASE_URL + "/api/v1/availableHoursByDay?day=" + this.state.day,
 			{
 				method: 'GET',
 				headers: {
@@ -453,7 +454,7 @@ export default class NewSchedule extends React.Component {
 
 		this.setState({animating: true});
 
-		fetch("http://192.168.0.103:3000/api/v1/taxiDogByClient?clientEmail=" + this.props.authState.email,
+		fetch(GLOBAL.BASE_URL + "/api/v1/taxiDogByClient?clientEmail=" + this.props.authState.email,
 			{
 				method: 'GET',
 				headers: {
@@ -528,7 +529,7 @@ export default class NewSchedule extends React.Component {
 
 		this.setState({animating: true});
 
-		fetch("http://192.168.0.103:3000/api/v1/newSchedule",
+		fetch(GLOBAL.BASE_URL + "/api/v1/newSchedule",
 			{
 				method: 'POST',
 				headers: {

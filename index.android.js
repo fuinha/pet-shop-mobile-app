@@ -15,6 +15,7 @@ import ScheduleDetail from './src/components/ScheduleDetail.js';
 import RestartClientPass from './src/components/RestartClientPass.js';
 
 export default class oboticao extends Component {
+
   render() {
     return (
       
